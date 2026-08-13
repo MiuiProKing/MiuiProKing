@@ -284,19 +284,54 @@ const app = initializeApp({
 });
 const db = getFirestore(app);
 
-let apiURL="https://allpredictor.com/api/v1";
-let headers={"accept":"application/json"};
+const WORKING_API_URL="https://crash-gateway-grm-cr.100hp.app/history";
+const WORKING_CUSTOMER_ID="077dee8d-c923-4c02-9bee-757573662e69";
+const WORKING_SESSION_ID="e76091af-1a61-45fb-902a-3482905b393c";
+let apiURL=WORKING_API_URL;
+let headers={
+  "accept":"application/json",
+  "customer-id":WORKING_CUSTOMER_ID,
+  "session-id":WORKING_SESSION_ID
+};
+
+async function sourceWorks(url,testHeaders){
+  try{
+    const res=await fetch(url,{headers:testHeaders,cache:"no-store"});
+    return res.ok;
+  }catch(e){return false;}
+}
 
 async function loadApiKeys(){
+  const candidates=[];
   try{
     const snap=await getDoc(doc(db,"config","luckyjet"));
     if(snap.exists()){
       const d=snap.data();
-      apiURL = d["api_url"];
-      headers["customer-id"]=d["customer-id"];
-      headers["session-id"] =d["session-id"];
+      if(d["api_url"]&&d["customer-id"]&&d["session-id"]){
+        candidates.push({
+          url:d["api_url"],
+          headers:{
+            "accept":"application/json",
+            "customer-id":d["customer-id"],
+            "session-id":d["session-id"]
+          },
+          name:"Firebase"
+        });
+      }
     }
-  }catch(e){ console.error("Ошибка конфигурации:",e); }
+  }catch(e){ console.warn("Firebase-конфигурация недоступна, использую резерв:",e); }
+
+  candidates.push({url:WORKING_API_URL,headers:{...headers},name:"резерв"});
+  for(const candidate of candidates){
+    if(await sourceWorks(candidate.url,candidate.headers)){
+      apiURL=candidate.url;
+      headers=candidate.headers;
+      console.info("LuckyJet источник подключён:",candidate.name);
+      return true;
+    }
+  }
+  console.error("LuckyJet: ни один источник не прошёл проверку");
+  return false;
 }
 
 // ==================== РУССКАЯ ОЗВУЧКА ====================
@@ -460,6 +495,7 @@ const hhmm=d=>`${fmt2(d.getHours())}:${fmt2(d.getMinutes())}`;
 
 let currentPredicted=null,pending=null,verificationStarted=false,scheduledStart=null;
 let autoFetchInterval=null,lastCoefficient=null,lastFetchTime=null,lastVerifiedCrash=null;
+let lastRoundId=null,historySeeded=false,sourceErrorShown=false;
 let ignoreFirstCrash=false,lastCrashAt=null,waitingGameEnd=false,postStartCrashSeen=false;
 const lastCoefs=[];
 
@@ -505,12 +541,35 @@ function getCoef(item){const v=item?.coef??item?.crash??item?.value??item?.topCo
 async function fetchStopCoefficient(){
   try{
     if(!apiURL)return null;
-    const res=await fetch(apiURL,{headers});
+    const res=await fetch(apiURL,{headers,cache:"no-store"});
     if(!res.ok)throw new Error('Status: '+res.status);
     const data=await res.json();
     if(!Array.isArray(data)||!data.length)return null;
-    return getCoef(data[0])??null;
-  }catch(e){return null;}
+    const latest=data[0];
+    const coef=getCoef(latest);
+    if(coef===null||!Number.isFinite(coef))return null;
+
+    if(!historySeeded){
+      const seed5=data.slice(0,5).map(getCoef).filter(Number.isFinite).reverse();
+      const seed20=data.slice(0,20).map(getCoef).filter(Number.isFinite).reverse();
+      lastCoefs.splice(0,lastCoefs.length,...seed5.slice(-5));
+      marketCoefs.splice(0,marketCoefs.length,...seed20.slice(-MAX_MARKET_COEFS));
+      historySeeded=true;
+      lastRoundId=String(latest?.id??'');
+      sourceErrorShown=false;
+      return {coef,id:lastRoundId,seeded:true};
+    }
+
+    sourceErrorShown=false;
+    return {coef,id:String(latest?.id??''),seeded:false};
+  }catch(e){
+    console.error("Ошибка LuckyJet /history:",e);
+    if(!sourceErrorShown){
+      sourceErrorShown=true;
+      setStatus('⚠️ Источник коэффициентов недоступен: '+e.message,'ko');
+    }
+    return null;
+  }
 }
 
 function startAutoFetch(){if(autoFetchInterval)return;fetchAndMaybeStart();autoFetchInterval=setInterval(fetchAndMaybeStart,5000)}
@@ -529,10 +588,20 @@ function tryStart(){
 
 async function fetchAndMaybeStart(){
   if(!verificationStarted&&scheduledStart&&Date.now()>=scheduledStart&&currentPredicted!=null)tryStart();
-  const coef=await fetchStopCoefficient();if(coef===null)return;
+  const round=await fetchStopCoefficient();if(round===null)return;
+  const coef=round.coef;
   const now=Date.now();
   const rounded=parseFloat(Number(coef===1?1.01:coef).toFixed(2));
-  if(lastCoefficient===rounded&&lastFetchTime&&(now-lastFetchTime)<5000)return;
+  if(round.seeded){
+    lastCoefficient=rounded;lastFetchTime=now;lastCrashAt=now;
+    lastEl.textContent=rounded.toFixed(2)+'X';
+    updateMarketUI();
+    setStatus('✅ Данные получены • '+summaryCoefs(),'ok');
+    return;
+  }
+  if(round.id&&round.id===lastRoundId)return;
+  if(!round.id&&lastCoefficient===rounded&&lastFetchTime&&(now-lastFetchTime)<15000)return;
+  lastRoundId=round.id||lastRoundId;
   lastCoefficient=rounded;lastFetchTime=now;lastCrashAt=now;
   lastCoefs.push(rounded);if(lastCoefs.length>5)lastCoefs.shift();
   marketCoefs.push(rounded);if(marketCoefs.length>MAX_MARKET_COEFS)marketCoefs.shift();
