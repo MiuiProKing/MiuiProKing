@@ -500,7 +500,8 @@ let ignoreFirstCrash=false,lastCrashAt=null,waitingGameEnd=false,postStartCrashS
 const lastCoefs=[];
 
 let counts=loadCounts(),history=loadHistory(),range=loadRange();
-let autoMode=false,autoTimer=null,waitFreshAnalysis=false;
+const REQUIRED_FRESH_ROUNDS=3;
+let autoMode=false,autoTimer=null,waitFreshAnalysis=false,freshRoundsCollected=0;
 
 const multEl=document.getElementById('multiplier'),circle=document.getElementById('circle');
 const btn=document.getElementById('generateButton');
@@ -621,7 +622,7 @@ async function fetchAndMaybeStart(){
     const predData={predicted_coef:pending.predictedOdds,real_coef:rounded,status:'ok',round:pending.currentRound};
     lastVoiceMsg='';
     predResults.push('ok');if(predResults.length>MAX_PRED_RESULTS)predResults.shift();
-    setStatus(`✅ Успешно на раунде ${pending.currentRound}${autoMode?' • жду новый раунд для анализа':''}`,
+    setStatus(`✅ Успешно на раунде ${pending.currentRound}${autoMode?' • собираю 3 новых раунда для анализа':''}`,
               'ok',`Предсказание подтверждено! Коэффициент ${pending.predictedOdds.toFixed(2)}`);
     multEl.textContent='Успешно ✅';multEl.style.color='#10b981';
     circle.classList.remove('verifying','ko');circle.classList.add('ok');
@@ -633,6 +634,7 @@ async function fetchAndMaybeStart(){
     pending=null;verificationStarted=false;scheduledStart=null;btn.disabled=false;
     postStartCrashSeen=false;waitingGameEnd=false;
     waitFreshAnalysis=autoMode;
+    freshRoundsCollected=0;
     const analysis=updateMarketUI();
     if(autoMode){
       clearTimeout(autoTimer);
@@ -644,7 +646,7 @@ async function fetchAndMaybeStart(){
     const predData={predicted_coef:pending.predictedOdds,real_coef:rounded,status:'ko',round:3};
     lastVoiceMsg='';
     predResults.push('ko');if(predResults.length>MAX_PRED_RESULTS)predResults.shift();
-    setStatus(`❌ Неудача после 3 раундов${autoMode?' • жду новый раунд для анализа':''}`,
+    setStatus(`❌ Неудача после 3 раундов${autoMode?' • собираю 3 новых раунда для анализа':''}`,
               'ko','Предсказание не подтвердилось после 3 раундов');
     multEl.textContent='Неудача ❌';multEl.style.color='#ef4444';
     circle.classList.remove('verifying','ok');circle.classList.add('ko');
@@ -656,6 +658,7 @@ async function fetchAndMaybeStart(){
     pending=null;verificationStarted=false;scheduledStart=null;btn.disabled=false;
     postStartCrashSeen=false;waitingGameEnd=false;
     waitFreshAnalysis=autoMode;
+    freshRoundsCollected=0;
     const analysis=updateMarketUI();
     let streak=0;
     for(let i=predResults.length-1;i>=0;i--){if(predResults[i]==='ko')streak++;else break;}
@@ -681,6 +684,7 @@ btn.addEventListener('click',()=>{
   if(!marketCheck.ok){multEl.textContent='⚠️';multEl.style.color='#ef4444';circle.classList.remove('ok','ko');setStatus('🚨 Рынок неблагоприятный — '+marketCheck.reason,'ko');btn.disabled=false;return;}
   if(!canPredict()){multEl.textContent='Анализ..';multEl.style.color='#f4a51c';circle.classList.remove('ok','ko');circle.classList.add('verifying');setStatus('Условия не выполнены • '+summaryCoefs(),'');btn.disabled=false;return;}
   waitFreshAnalysis=false;
+  freshRoundsCollected=0;
   btn.disabled=true;
   const min=Math.max(1,Number(range.min)),max=Math.max(min+.01,Number(range.max));
   currentPredicted=Number((Math.random()*(max-min)+min).toFixed(2));
@@ -695,17 +699,22 @@ function isCycleActive(){return verificationStarted||!!pending||scheduledStart!=
 
 function analyzeFreshRoundForAuto(){
   if(!autoMode||!waitFreshAnalysis||isCycleActive())return;
+  freshRoundsCollected=Math.min(REQUIRED_FRESH_ROUNDS,freshRoundsCollected+1);
+  if(freshRoundsCollected<REQUIRED_FRESH_ROUNDS){
+    setStatus(`🔄 Сбор новых раундов: ${freshRoundsCollected}/${REQUIRED_FRESH_ROUNDS} • полный анализ после третьего`, '');
+    return;
+  }
   const marketCheck=isMarketSafeToPlay();
   if(!marketCheck.ok){
-    setStatus('🔎 Новый раунд проверен • рынок пока неблагоприятный — жду следующий','ko');
+    setStatus(`🔎 Полный анализ после ${REQUIRED_FRESH_ROUNDS}/${REQUIRED_FRESH_ROUNDS} • рынок пока неблагоприятный — жду следующий`,'ko');
     return;
   }
   if(!canPredict()){
-    setStatus('🔎 Новый раунд проверен • вход не подтверждён • '+summaryCoefs(),'');
+    setStatus(`🔎 Полный анализ после ${REQUIRED_FRESH_ROUNDS}/${REQUIRED_FRESH_ROUNDS} • вход не подтверждён • `+summaryCoefs(),'');
     return;
   }
   waitFreshAnalysis=false;
-  setStatus('✅ Новый раунд проанализирован • условия подтверждены','ok');
+  setStatus(`✅ Полный анализ после ${REQUIRED_FRESH_ROUNDS} новых раундов • условия подтверждены`,'ok');
   btn.click();
 }
 
@@ -717,7 +726,7 @@ function lancerAuto(){
     return;
   }
   if(waitFreshAnalysis){
-    setStatus('🔎 Жду следующий завершённый раунд для нового анализа...','');
+    setStatus(`🔄 Собираю новые завершённые раунды: ${Math.min(freshRoundsCollected,REQUIRED_FRESH_ROUNDS)}/${REQUIRED_FRESH_ROUNDS}...`,'');
     return;
   }
   const{start,resetAt,locked}=getDailyWindow();if(locked&&start){openLock(resetAt);return}
@@ -725,7 +734,8 @@ function lancerAuto(){
   const marketCheck=isMarketSafeToPlay();
   if(!marketCheck.ok){
     waitFreshAnalysis=true;
-    setStatus('🚨 Авто ждёт новый раунд — '+marketCheck.reason,'ko');
+    freshRoundsCollected=0;
+    setStatus(`🚨 Авто собирает ${REQUIRED_FRESH_ROUNDS} новых раунда — `+marketCheck.reason,'ko');
     clearTimeout(autoTimer);return;
   }
   multEl.textContent='Анализ..';multEl.style.color='#f4a51c';
@@ -735,7 +745,8 @@ function lancerAuto(){
   if(canPredict())btn.click();
   else{
     waitFreshAnalysis=true;
-    setStatus('Авто: условия не выполнены • жду новый раунд • '+summaryCoefs(),'');
+    freshRoundsCollected=0;
+    setStatus(`Авто: условия не выполнены • собираю ${REQUIRED_FRESH_ROUNDS} новых раунда • `+summaryCoefs(),'');
     clearTimeout(autoTimer);
   }
 }
@@ -745,7 +756,7 @@ autoBtn.addEventListener('click',()=>{
   if(isPaused&&!pauseSkipped){document.getElementById('pauseOverlay').classList.add('show');return}
   ensureDaily();autoMode=!autoMode;autoBtn.textContent=autoMode?'АВТО: ВКЛ':'АВТОМАТИЧЕСКИЙ';
   if(autoMode){speak('Автоматический режим включён');lancerAuto();}
-  else{waitFreshAnalysis=false;window.speechSynthesis?.cancel();clearTimeout(autoTimer);}
+  else{waitFreshAnalysis=false;freshRoundsCollected=0;window.speechSynthesis?.cancel();clearTimeout(autoTimer);}
 });
 
 function toggle(el,open){el.classList.toggle('open',open);}
