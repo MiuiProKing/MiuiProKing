@@ -575,19 +575,19 @@ async function fetchStopCoefficient(){
 function startAutoFetch(){if(autoFetchInterval)return;fetchAndMaybeStart();autoFetchInterval=setInterval(fetchAndMaybeStart,5000)}
 
 function tryStart(){
-  if(verificationStarted||currentPredicted==null||scheduledStart==null)return;
-  if(lastCrashAt===null||lastCrashAt<scheduledStart){waitingGameEnd=true;setStatus('Ожидайте окончания текущей игры','','Подождите окончания текущей игры');return}
-  if(!postStartCrashSeen){postStartCrashSeen=true;waitingGameEnd=true;setStatus('Готовьтесь к ставке','','Приготовьтесь ставить на следующем старте');return}
+  if(verificationStarted||currentPredicted==null)return;
   waitingGameEnd=false;
-  setStatus('Ставьте сейчас','','Время ставить!');
-  verificationStarted=true;ignoreFirstCrash=true;
+  postStartCrashSeen=false;
+  scheduledStart=null;
+  setStatus('🔥 СТАВЬТЕ СЕЙЧАС — в следующий новый раунд','ok',
+            `Сигнал готов! Цель ${currentPredicted.toFixed(2)}. Ставьте в следующий новый раунд.`);
+  verificationStarted=true;ignoreFirstCrash=false;lastVerifiedCrash=null;
   pending={predictedOdds:currentPredicted,currentRound:0};
   roundEl.textContent='0';multEl.style.color='#00ff66';multEl.textContent=currentPredicted.toFixed(2)+'X';
   circle.classList.add('verifying');
 }
 
 async function fetchAndMaybeStart(){
-  if(!verificationStarted&&scheduledStart&&Date.now()>=scheduledStart&&currentPredicted!=null)tryStart();
   const round=await fetchStopCoefficient();if(round===null)return;
   const coef=round.coef;
   const now=Date.now();
@@ -607,11 +607,9 @@ async function fetchAndMaybeStart(){
   marketCoefs.push(rounded);if(marketCoefs.length>MAX_MARKET_COEFS)marketCoefs.shift();
   lastEl.textContent=rounded.toFixed(2)+'X';
   updateMarketUI();
-  if(!verificationStarted&&scheduledStart&&Date.now()>=scheduledStart)tryStart();
   if(!pending)return;
-  if(rounded===lastVerifiedCrash)return;
-  lastVerifiedCrash=rounded;
-  if(ignoreFirstCrash){ignoreFirstCrash=false;return}
+  // Уникальный round.id уже отсекает старый завершённый раунд. Даже если два
+  // соседних коэффициента одинаковы, это два разных новых раунда и оба считаются.
   pending.currentRound+=1;roundEl.textContent=pending.currentRound;
 
   if(rounded>=pending.predictedOdds){
@@ -680,12 +678,9 @@ btn.addEventListener('click',()=>{
   currentPredicted=Number((Math.random()*(max-min)+min).toFixed(2));
   multEl.textContent=currentPredicted.toFixed(2)+'X';multEl.style.color='#00ff66';
   circle.classList.remove('ok','ko');
-  const offsetMin=Math.floor(Math.random()*4)+1;
-  const target=new Date(Date.now()+offsetMin*60000);target.setSeconds(0,0);scheduledStart=target.getTime();
-  roundEl.textContent='0';betTimeEl.textContent=`${fmt2(target.getHours())}:${fmt2(target.getMinutes())}`;
+  roundEl.textContent='0';betTimeEl.textContent='СЕЙЧАС';
   lastVoiceMsg='';
-  setStatus(`Время: ${betTimeEl.textContent}`,'',`Сигнал готов! Коэффициент ${currentPredicted.toFixed(2)}. Ставка в ${fmt2(target.getHours())}:${fmt2(target.getMinutes())}`);
-  waitingGameEnd=false;postStartCrashSeen=false;
+  tryStart();
 });
 
 function isCycleActive(){return verificationStarted||!!pending||scheduledStart!==null}
@@ -693,9 +688,8 @@ function isCycleActive(){return verificationStarted||!!pending||scheduledStart!=
 function lancerAuto(){
   if(!autoMode)return;
   if(isCycleActive()){ 
-    const w=scheduledStart&&Date.now()<scheduledStart?Math.max(1000,scheduledStart-Date.now()+500):5000;
     clearTimeout(autoTimer);
-    autoTimer=setTimeout(lancerAuto,w);
+    autoTimer=setTimeout(lancerAuto,2000);
     return;
   }
   const{start,resetAt,locked}=getDailyWindow();if(locked&&start){openLock(resetAt);return}
@@ -705,12 +699,12 @@ function lancerAuto(){
   multEl.textContent='Анализ..';multEl.style.color='#f4a51c';
   circle.classList.remove('ok','ko');circle.classList.add('verifying');
   setStatus('Анализ рынка...','');
-  setTimeout(()=>{
-    if(!autoMode)return;
-    startAutoFetch();
-    if(canPredict())btn.click();
-    else{setStatus('Авто: условия не выполнены • '+summaryCoefs(),'');clearTimeout(autoTimer);autoTimer=setTimeout(lancerAuto,7000)}
-  },15000);
+  startAutoFetch();
+  if(canPredict())btn.click();
+  else{
+    setStatus('Авто: условия не выполнены • '+summaryCoefs(),'');
+    clearTimeout(autoTimer);autoTimer=setTimeout(lancerAuto,3000);
+  }
 }
 
 autoBtn.addEventListener('click',()=>{
