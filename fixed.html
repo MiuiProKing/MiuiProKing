@@ -500,7 +500,7 @@ let ignoreFirstCrash=false,lastCrashAt=null,waitingGameEnd=false,postStartCrashS
 const lastCoefs=[];
 
 let counts=loadCounts(),history=loadHistory(),range=loadRange();
-let autoMode=false,autoTimer=null;
+let autoMode=false,autoTimer=null,waitFreshAnalysis=false;
 
 const multEl=document.getElementById('multiplier'),circle=document.getElementById('circle');
 const btn=document.getElementById('generateButton');
@@ -607,7 +607,12 @@ async function fetchAndMaybeStart(){
   marketCoefs.push(rounded);if(marketCoefs.length>MAX_MARKET_COEFS)marketCoefs.shift();
   lastEl.textContent=rounded.toFixed(2)+'X';
   updateMarketUI();
-  if(!pending)return;
+  if(!pending){
+    // После закрытого прогноза этот новый раунд только обновляет рынок.
+    // Сигнал, если условия подходят, будет относиться уже к следующему раунду.
+    if(autoMode&&waitFreshAnalysis)analyzeFreshRoundForAuto();
+    return;
+  }
   // Уникальный round.id уже отсекает старый завершённый раунд. Даже если два
   // соседних коэффициента одинаковы, это два разных новых раунда и оба считаются.
   pending.currentRound+=1;roundEl.textContent=pending.currentRound;
@@ -616,7 +621,8 @@ async function fetchAndMaybeStart(){
     const predData={predicted_coef:pending.predictedOdds,real_coef:rounded,status:'ok',round:pending.currentRound};
     lastVoiceMsg='';
     predResults.push('ok');if(predResults.length>MAX_PRED_RESULTS)predResults.shift();
-    setStatus(`✅ Успешно на раунде ${pending.currentRound}`,'ok',`Предсказание подтверждено! Коэффициент ${pending.predictedOdds.toFixed(2)}`);
+    setStatus(`✅ Успешно на раунде ${pending.currentRound}${autoMode?' • жду новый раунд для анализа':''}`,
+              'ok',`Предсказание подтверждено! Коэффициент ${pending.predictedOdds.toFixed(2)}`);
     multEl.textContent='Успешно ✅';multEl.style.color='#10b981';
     circle.classList.remove('verifying','ko');circle.classList.add('ok');
     counts.ok+=1;saveCounts();refreshUI();
@@ -626,10 +632,10 @@ async function fetchAndMaybeStart(){
     incDaily();
     pending=null;verificationStarted=false;scheduledStart=null;btn.disabled=false;
     postStartCrashSeen=false;waitingGameEnd=false;
+    waitFreshAnalysis=autoMode;
     const analysis=updateMarketUI();
     if(autoMode){
       clearTimeout(autoTimer);
-      autoTimer=setTimeout(lancerAuto, 4000);
     }
     return;
   }
@@ -638,7 +644,8 @@ async function fetchAndMaybeStart(){
     const predData={predicted_coef:pending.predictedOdds,real_coef:rounded,status:'ko',round:3};
     lastVoiceMsg='';
     predResults.push('ko');if(predResults.length>MAX_PRED_RESULTS)predResults.shift();
-    setStatus('❌ Неудача после 3 раундов','ko','Предсказание не подтвердилось после 3 раундов');
+    setStatus(`❌ Неудача после 3 раундов${autoMode?' • жду новый раунд для анализа':''}`,
+              'ko','Предсказание не подтвердилось после 3 раундов');
     multEl.textContent='Неудача ❌';multEl.style.color='#ef4444';
     circle.classList.remove('verifying','ok');circle.classList.add('ko');
     counts.ko+=1;saveCounts();refreshUI();
@@ -648,13 +655,13 @@ async function fetchAndMaybeStart(){
     incDaily();
     pending=null;verificationStarted=false;scheduledStart=null;btn.disabled=false;
     postStartCrashSeen=false;waitingGameEnd=false;
+    waitFreshAnalysis=autoMode;
     const analysis=updateMarketUI();
     let streak=0;
     for(let i=predResults.length-1;i>=0;i--){if(predResults[i]==='ko')streak++;else break;}
     if(streak>=LOSS_STREAK_DANGER){triggerPause(`${streak} проигрышей подряд.`);}
     else if(autoMode){
       clearTimeout(autoTimer);
-      autoTimer=setTimeout(lancerAuto, 5000);
     }
   }
 }
@@ -673,6 +680,7 @@ btn.addEventListener('click',()=>{
   const marketCheck=isMarketSafeToPlay();
   if(!marketCheck.ok){multEl.textContent='⚠️';multEl.style.color='#ef4444';circle.classList.remove('ok','ko');setStatus('🚨 Рынок неблагоприятный — '+marketCheck.reason,'ko');btn.disabled=false;return;}
   if(!canPredict()){multEl.textContent='Анализ..';multEl.style.color='#f4a51c';circle.classList.remove('ok','ko');circle.classList.add('verifying');setStatus('Условия не выполнены • '+summaryCoefs(),'');btn.disabled=false;return;}
+  waitFreshAnalysis=false;
   btn.disabled=true;
   const min=Math.max(1,Number(range.min)),max=Math.max(min+.01,Number(range.max));
   currentPredicted=Number((Math.random()*(max-min)+min).toFixed(2));
@@ -685,6 +693,22 @@ btn.addEventListener('click',()=>{
 
 function isCycleActive(){return verificationStarted||!!pending||scheduledStart!==null}
 
+function analyzeFreshRoundForAuto(){
+  if(!autoMode||!waitFreshAnalysis||isCycleActive())return;
+  const marketCheck=isMarketSafeToPlay();
+  if(!marketCheck.ok){
+    setStatus('🔎 Новый раунд проверен • рынок пока неблагоприятный — жду следующий','ko');
+    return;
+  }
+  if(!canPredict()){
+    setStatus('🔎 Новый раунд проверен • вход не подтверждён • '+summaryCoefs(),'');
+    return;
+  }
+  waitFreshAnalysis=false;
+  setStatus('✅ Новый раунд проанализирован • условия подтверждены','ok');
+  btn.click();
+}
+
 function lancerAuto(){
   if(!autoMode)return;
   if(isCycleActive()){ 
@@ -692,18 +716,27 @@ function lancerAuto(){
     autoTimer=setTimeout(lancerAuto,2000);
     return;
   }
+  if(waitFreshAnalysis){
+    setStatus('🔎 Жду следующий завершённый раунд для нового анализа...','');
+    return;
+  }
   const{start,resetAt,locked}=getDailyWindow();if(locked&&start){openLock(resetAt);return}
   if(isPaused&&!pauseSkipped)return;
   const marketCheck=isMarketSafeToPlay();
-  if(!marketCheck.ok){setStatus('🚨 Авто приостановлен — '+marketCheck.reason,'ko');clearTimeout(autoTimer);autoTimer=setTimeout(lancerAuto,10000);return;}
+  if(!marketCheck.ok){
+    waitFreshAnalysis=true;
+    setStatus('🚨 Авто ждёт новый раунд — '+marketCheck.reason,'ko');
+    clearTimeout(autoTimer);return;
+  }
   multEl.textContent='Анализ..';multEl.style.color='#f4a51c';
   circle.classList.remove('ok','ko');circle.classList.add('verifying');
   setStatus('Анализ рынка...','');
   startAutoFetch();
   if(canPredict())btn.click();
   else{
-    setStatus('Авто: условия не выполнены • '+summaryCoefs(),'');
-    clearTimeout(autoTimer);autoTimer=setTimeout(lancerAuto,3000);
+    waitFreshAnalysis=true;
+    setStatus('Авто: условия не выполнены • жду новый раунд • '+summaryCoefs(),'');
+    clearTimeout(autoTimer);
   }
 }
 
@@ -712,7 +745,7 @@ autoBtn.addEventListener('click',()=>{
   if(isPaused&&!pauseSkipped){document.getElementById('pauseOverlay').classList.add('show');return}
   ensureDaily();autoMode=!autoMode;autoBtn.textContent=autoMode?'АВТО: ВКЛ':'АВТОМАТИЧЕСКИЙ';
   if(autoMode){speak('Автоматический режим включён');lancerAuto();}
-  else{window.speechSynthesis?.cancel();clearTimeout(autoTimer);}
+  else{waitFreshAnalysis=false;window.speechSynthesis?.cancel();clearTimeout(autoTimer);}
 });
 
 function toggle(el,open){el.classList.toggle('open',open);}
