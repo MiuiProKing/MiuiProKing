@@ -494,7 +494,8 @@ const fmt2=n=>n<10?'0'+n:''+n;
 const hhmm=d=>`${fmt2(d.getHours())}:${fmt2(d.getMinutes())}`;
 
 let currentPredicted=null,pending=null,verificationStarted=false,scheduledStart=null;
-let autoFetchInterval=null,lastCoefficient=null,lastFetchTime=null,lastVerifiedCrash=null;
+const AUTO_FETCH_MS=1000;
+let autoFetchInterval=null,fetchInProgress=false,lastCoefficient=null,lastFetchTime=null,lastVerifiedCrash=null;
 let lastRoundId=null,historySeeded=false,sourceErrorShown=false;
 let ignoreFirstCrash=false,lastCrashAt=null,waitingGameEnd=false,postStartCrashSeen=false;
 const lastCoefs=[];
@@ -573,7 +574,16 @@ async function fetchStopCoefficient(){
   }
 }
 
-function startAutoFetch(){if(autoFetchInterval)return;fetchAndMaybeStart();autoFetchInterval=setInterval(fetchAndMaybeStart,5000)}
+async function pollLatestRound(){
+  if(fetchInProgress)return;
+  fetchInProgress=true;
+  try{await fetchAndMaybeStart();}finally{fetchInProgress=false;}
+}
+function startAutoFetch(){
+  if(autoFetchInterval)return;
+  pollLatestRound();
+  autoFetchInterval=setInterval(pollLatestRound,AUTO_FETCH_MS);
+}
 
 function tryStart(){
   if(verificationStarted||currentPredicted==null)return;
@@ -701,7 +711,14 @@ function analyzeFreshRoundForAuto(){
   if(!autoMode||!waitFreshAnalysis||isCycleActive())return;
   freshRoundsCollected=Math.min(REQUIRED_FRESH_ROUNDS,freshRoundsCollected+1);
   if(freshRoundsCollected<REQUIRED_FRESH_ROUNDS){
-    setStatus(`🔄 Сбор новых раундов: ${freshRoundsCollected}/${REQUIRED_FRESH_ROUNDS} • полный анализ после третьего`, '');
+    if(freshRoundsCollected===REQUIRED_FRESH_ROUNDS-1){
+      betTimeEl.textContent='ПРИГОТОВЬТЕСЬ';
+      navigator.vibrate?.([200,120,200]);
+      setStatus(`⏳ ПРИГОТОВЬТЕСЬ • собрано ${freshRoundsCollected}/${REQUIRED_FRESH_ROUNDS} • после следующего результата возможен вход`,
+                '', 'Внимание! Приготовьтесь. После следующего результата возможен вход.');
+    }else{
+      setStatus(`🔄 Сбор новых раундов: ${freshRoundsCollected}/${REQUIRED_FRESH_ROUNDS} • полный анализ после третьего`, '');
+    }
     return;
   }
   const marketCheck=isMarketSafeToPlay();
