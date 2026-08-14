@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify V22 gate and native bridge
         run: |
-          grep -q "count===EXACT_REQUIRED_OVER_MIN" fixed-2x-v22.html
+          grep -q "length===EXACT_REQUIRED_OVER_MIN" fixed-2x-v22.html
           grep -q "luckyjetStatus" fixed-2x-v22.html
           grep -q "fixed-2x-v22.html" ios/LuckyJet2XV22/LuckyJet2XV22/AppDelegate.swift
 

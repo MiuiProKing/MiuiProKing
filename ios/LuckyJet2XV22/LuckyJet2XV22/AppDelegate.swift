@@ -194,8 +194,8 @@ private final class PiPMonitor: NSObject, AVPictureInPictureControllerDelegate {
         playerLayer.videoGravity = .resizeAspect
         playerLayer.backgroundColor = UIColor.black.cgColor
 
-        if AVPictureInPictureController.isPictureInPictureSupported() {
-            let pip = AVPictureInPictureController(playerLayer: playerLayer)
+        if AVPictureInPictureController.isPictureInPictureSupported(),
+           let pip = AVPictureInPictureController(playerLayer: playerLayer) {
             pip.delegate = self
             pip.canStartPictureInPictureAutomaticallyFromInline = true
             controller = pip
