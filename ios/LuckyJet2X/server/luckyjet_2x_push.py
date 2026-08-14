@@ -17,8 +17,10 @@ import sqlite3
 import time
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import httpx
 import jwt
@@ -43,6 +45,7 @@ LAST_COEF_MIN = 1.5
 LAST_COEF_REQUIRED = 3
 DB_PATH = Path(os.getenv("DB_PATH", "luckyjet_2x_push.sqlite3"))
 REGISTRATION_SECRET = os.getenv("REGISTRATION_SECRET", "")
+KYIV = ZoneInfo("Europe/Kyiv")
 
 
 def _headers() -> dict[str, str]:
@@ -55,7 +58,7 @@ def _headers() -> dict[str, str]:
 
 
 def coefficient(item: dict[str, Any]) -> float | None:
-    for key in ("coef", "crash", "value", "topCoefficient", "multiplier"):
+    for key in ("coef", "coefficient", "crash", "value", "topCoefficient", "multiplier"):
         raw = item.get(key)
         try:
             value = float(raw)
@@ -248,6 +251,63 @@ class APNs:
                     log.exception("APNs request failed for …%s", token[-8:])
 
 
+class Telegram:
+    def __init__(self) -> None:
+        self.token = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+        self.chat_id = os.getenv("TELEGRAM_CHAT_ID", "").strip()
+        self.thread_id = os.getenv("TELEGRAM_THREAD_ID", "").strip()
+
+    @property
+    def configured(self) -> bool:
+        return bool(self.token and self.chat_id)
+
+    async def send(self, title: str, body: str, *, kind: str, sound: str = "default") -> None:
+        if not self.configured:
+            log.warning("Telegram is not configured; set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID")
+            return
+        now = datetime.now(KYIV).strftime("%H:%M:%S")
+        payload: dict[str, Any] = {
+            "chat_id": self.chat_id,
+            "text": f"{title}\n\n{body}\n\n🕒 Киев: {now}",
+            "disable_web_page_preview": True,
+            "reply_markup": {
+                "inline_keyboard": [[{
+                    "text": "🚀 Открыть LuckyJet 2X",
+                    "url": "https://miuiproking.github.io/MiuiProKing/fixed-2x.html",
+                }]]
+            },
+        }
+        if self.thread_id:
+            try:
+                payload["message_thread_id"] = int(self.thread_id)
+            except ValueError:
+                log.error("TELEGRAM_THREAD_ID must be an integer")
+        try:
+            async with httpx.AsyncClient(timeout=15) as client:
+                response = await client.post(
+                    f"https://api.telegram.org/bot{self.token}/sendMessage",
+                    json=payload,
+                )
+            if response.status_code == 200:
+                log.info("Telegram %s sent to chat %s", kind, self.chat_id)
+            else:
+                log.error("Telegram %s: %s %s", kind, response.status_code, response.text)
+        except Exception:
+            log.exception("Telegram request failed")
+
+
+class NotificationFanout:
+    def __init__(self, apns: APNs, telegram: Telegram) -> None:
+        self.apns = apns
+        self.telegram = telegram
+
+    async def send(self, title: str, body: str, *, kind: str, sound: str = "default") -> None:
+        await asyncio.gather(
+            self.apns.send(title, body, kind=kind, sound=sound),
+            self.telegram.send(title, body, kind=kind, sound=sound),
+        )
+
+
 @dataclass
 class MonitorState:
     market: list[float] = field(default_factory=list)
@@ -280,9 +340,9 @@ class MonitorState:
 
 
 class Monitor:
-    def __init__(self, store: Store, apns: APNs) -> None:
+    def __init__(self, store: Store, notifier: NotificationFanout) -> None:
         self.store = store
-        self.apns = apns
+        self.notifier = notifier
         self.state = MonitorState.from_dict(store.load_state())
         self.client = httpx.AsyncClient(timeout=15, follow_redirects=True)
 
@@ -322,14 +382,14 @@ class Monitor:
             status = "WIN" if coef >= TARGET else "LOSS"
             if status == "WIN":
                 self.state.wins += 1
-                await self.apns.send(
+                await self.notifier.send(
                     "✅ WIN 2X",
                     f"Первый проверочный раунд завершён: {coef:.2f}X",
                     kind="result_win",
                 )
             else:
                 self.state.losses += 1
-                await self.apns.send(
+                await self.notifier.send(
                     "❌ LOSS 2X",
                     f"Первый проверочный раунд завершён: {coef:.2f}X. Начат новый полный анализ.",
                     kind="result_loss",
@@ -350,7 +410,7 @@ class Monitor:
 
         self.state.fresh_count = min(FRESH_REQUIRED, self.state.fresh_count + 1)
         if self.state.fresh_count == FRESH_REQUIRED - 1:
-            await self.apns.send(
+            await self.notifier.send(
                 "⏳ ПРИГОТОВЬТЕСЬ",
                 "Собрано 4/5 новых раундов. После следующего результата возможен вход 2.00X.",
                 kind="prepare",
@@ -363,7 +423,7 @@ class Monitor:
             self.state.pending = True
             self.state.signalled_at = int(time.time())
             self.state.signal_window = last5.copy()
-            await self.apns.send(
+            await self.notifier.send(
                 "🔥 СТАВЬТЕ СЕЙЧАС • 2.00X",
                 "Условия подтверждены. Вход только в следующий новый раунд.",
                 kind="signal",
@@ -402,7 +462,9 @@ class Monitor:
 
 store = Store(DB_PATH)
 apns = APNs(store)
-monitor = Monitor(store, apns)
+telegram = Telegram()
+notifier = NotificationFanout(apns, telegram)
+monitor = Monitor(store, notifier)
 monitor_task: asyncio.Task[None] | None = None
 
 
@@ -449,7 +511,7 @@ async def health() -> dict[str, Any]:
         "last_coefficients": state.market[-5:],
         "registered_devices": len(store.tokens()),
         "apns_configured": apns.configured,
+        "telegram_configured": telegram.configured,
         "wins": state.wins,
         "losses": state.losses,
     }
-
