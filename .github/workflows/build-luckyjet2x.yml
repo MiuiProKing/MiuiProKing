@@ -1,0 +1,57 @@
+name: Build LuckyJet 2X IPA
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "ios/LuckyJet2X/**"
+      - ".github/workflows/build-luckyjet2x.yml"
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure optional push registration
+        env:
+          PUSH_URL: ${{ vars.PUSH_REGISTRATION_URL }}
+          PUSH_SECRET: ${{ secrets.PUSH_REGISTRATION_SECRET }}
+        run: |
+          /usr/libexec/PlistBuddy -c "Set :PushRegistrationURL ${PUSH_URL}" ios/LuckyJet2X/LuckyJet2X/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :PushRegistrationSecret ${PUSH_SECRET}" ios/LuckyJet2X/LuckyJet2X/Info.plist
+
+      - name: Build unsigned iPhone app
+        run: |
+          xcodebuild \
+            -project ios/LuckyJet2X/LuckyJet2X.xcodeproj \
+            -scheme LuckyJet2X \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath "$RUNNER_TEMP/LuckyJet2XDerived" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            clean build
+
+      - name: Package and verify IPA
+        run: |
+          APP="$RUNNER_TEMP/LuckyJet2XDerived/Build/Products/Release-iphoneos/LuckyJet2X.app"
+          test -d "$APP"
+          test -f "$APP/LuckyJet2X"
+          /usr/bin/file "$APP/LuckyJet2X" | /usr/bin/grep -q "arm64"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP/Info.plist" | /usr/bin/grep -qx "com.miuiproking.luckyjet2x"
+          mkdir -p "$RUNNER_TEMP/Payload"
+          ditto "$APP" "$RUNNER_TEMP/Payload/LuckyJet2X.app"
+          (cd "$RUNNER_TEMP" && /usr/bin/zip -qry "$GITHUB_WORKSPACE/LuckyJet2X-unsigned.ipa" Payload)
+          /usr/bin/unzip -t LuckyJet2X-unsigned.ipa
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: LuckyJet2X-unsigned-ipa
+          path: LuckyJet2X-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 30
+
