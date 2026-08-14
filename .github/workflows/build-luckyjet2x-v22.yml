@@ -1,0 +1,61 @@
+name: Build LuckyJet 2X V22 IPA
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "fixed-2x-v22.html"
+      - "ios/LuckyJet2XV22/**"
+      - ".github/workflows/build-luckyjet2x-v22.yml"
+
+jobs:
+  verify-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify V22 gate and native bridge
+        run: |
+          grep -q "count===EXACT_REQUIRED_OVER_MIN" fixed-2x-v22.html
+          grep -q "luckyjetStatus" fixed-2x-v22.html
+          grep -q "fixed-2x-v22.html" ios/LuckyJet2XV22/LuckyJet2XV22/AppDelegate.swift
+
+  build:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build unsigned V22 iPhone app
+        run: |
+          xcodebuild \
+            -project ios/LuckyJet2XV22/LuckyJet2XV22.xcodeproj \
+            -scheme LuckyJet2XV22 \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath "$RUNNER_TEMP/LuckyJet2XV22Derived" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            clean build
+
+      - name: Package and verify V22 IPA
+        run: |
+          APP="$RUNNER_TEMP/LuckyJet2XV22Derived/Build/Products/Release-iphoneos/LuckyJet2XV22.app"
+          test -d "$APP"
+          test -f "$APP/LuckyJet2XV22"
+          test -f "$APP/PiPStatus.mp4"
+          /usr/bin/file "$APP/LuckyJet2XV22" | /usr/bin/grep -q "arm64"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP/Info.plist" | /usr/bin/grep -qx "com.miuiproking.luckyjet2x.v22"
+          mkdir -p "$RUNNER_TEMP/Payload"
+          ditto "$APP" "$RUNNER_TEMP/Payload/LuckyJet2XV22.app"
+          (cd "$RUNNER_TEMP" && /usr/bin/zip -qry "$GITHUB_WORKSPACE/LuckyJet2X-V22-unsigned.ipa" Payload)
+          /usr/bin/unzip -t LuckyJet2X-V22-unsigned.ipa
+
+      - name: Upload unsigned V22 IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: LuckyJet2X-V22-unsigned-ipa
+          path: LuckyJet2X-V22-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 30
