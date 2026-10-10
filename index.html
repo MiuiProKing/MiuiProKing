@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080d1b">
+<meta name="color-scheme" content="dark">
+<title>LuckyJet · Главное меню</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;min-height:100svh;background:#080d1b;color:#f3f5ff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:grid;place-items:center;padding:48px 24px;background-image:radial-gradient(ellipse at 15% 0%,#19326066,transparent 55%),radial-gradient(ellipse at 100% 80%,#44226444,transparent 50%)}
+main{width:100%;max-width:1000px}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:62px;font-size:18px;font-weight:800;letter-spacing:2px}
+.brand-icon{display:grid;place-items:center;width:42px;height:42px;border:1px solid #669bff55;border-radius:13px;background:#4b85f51a;color:#8ab9ff}
+.brand-icon svg{width:24px;height:24px}
+.brand span span{color:#83adff}
+.eyebrow{color:#9caac8;letter-spacing:3px;font-size:11px;font-weight:700;text-transform:uppercase}
+h1{font-size:clamp(34px,6vw,56px);font-weight:750;letter-spacing:-2px;line-height:1.12;margin:16px 0}
+.intro{color:#a0abc4;font-size:16px;line-height:1.6;margin:0 0 36px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{position:relative;display:flex;flex-direction:column;min-width:0;min-height:340px;padding:30px;text-decoration:none;color:inherit;border:1px solid #91afff26;border-radius:26px;background:linear-gradient(155deg,#162744,#101725 75%);overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s}
+.card.external{border-color:#c19aff26;background:linear-gradient(155deg,#292044,#141323 75%)}
+.card:hover{transform:translateY(-4px);border-color:#80aeff99;box-shadow:0 20px 50px #0004}
+.card.external:hover{border-color:#c09aff99}
+.card:active{transform:translateY(-1px)}
+.card:focus-visible{outline:3px solid #b5ceff;outline-offset:5px}
+.cover{aspect-ratio:2/3;width:100%;max-width:240px;margin:0 auto 24px;border-radius:18px;overflow:hidden;background:#090f1f;box-shadow:0 14px 35px #0004}
+.cover img{display:block;width:100%;height:100%;object-fit:contain;transition:transform .25s}
+.card:hover .cover img{transform:scale(1.03)}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.icon{display:grid;place-items:center;width:56px;height:56px;flex-shrink:0;border-radius:17px;background:#5492ff1a;border:1px solid #74acff33;color:#8fbaff}
+.external .icon{color:#c4a1ff;background:#a071ee1a;border-color:#bb90ff33}
+.icon svg{width:26px;height:26px}
+.tag{font-size:11px;letter-spacing:1.4px;font-weight:700;color:#a6bcde;text-transform:uppercase}
+.external .tag{color:#bdacd6}
+h2{font-size:28px;letter-spacing:-.7px;margin:24px 0 10px}
+.description{color:#a6b4cc;font-size:15px;line-height:1.6;max-width:290px;margin:0 0 30px}
+.external .description{color:#b6abc9}
+.open{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:auto;padding-top:20px;border-top:1px solid #ffffff12;font-size:14px;font-weight:650}
+.open svg{width:22px;height:22px;color:#94bbff;transition:transform .2s}
+.external .open svg{color:#c6a6ff}
+.card:hover .open svg{transform:translateX(4px)}
+footer{display:flex;align-items:center;gap:8px;color:#77849e;font-size:12px;line-height:1.5;margin-top:28px}
+footer svg{width:15px;height:15px;flex-shrink:0}
+@media(max-width:620px){
+body{padding:max(28px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+.brand{margin-bottom:40px}
+h1{letter-spacing:-1.2px}
+.intro{font-size:14px;margin-bottom:26px}
+.cards{grid-template-columns:1fr;gap:16px}
+.card{min-height:265px;padding:24px;border-radius:23px}
+h2{font-size:25px;margin-top:23px}
+.description{font-size:14px;margin-bottom:23px;max-width:none}
+.icon{width:48px;height:48px;border-radius:14px}
+.cover{max-width:210px;margin-bottom:22px}
+.open{padding-top:18px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.card:hover,.card:active{transform:none}}
+</style>
+</head>
+<body>
+<main>
+<header class="brand">
+<div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 16-8-8 16-2-6-6-2Z"/><path d="m10 14 10-10"/></svg></div>
+<span>LUCKY<span>JET</span></span>
+</header>
+<div class="eyebrow">Главное меню</div>
+<h1>Выберите версию</h1>
+<p class="intro">Две страницы LuckyJet — откройте ту, которая вам нужна.</p>
+<nav class="cards" aria-label="Выбор версии LuckyJet">
+<a class="card" href="https://miuiproking.github.io/MiuiProKing/fixed.html?v=c30d1a4ec70006689079e61faf871cef62f96496" aria-labelledby="ours-title">
+<div class="cover"><img src="https://f1w-4561.com/resources/v1/optimizeimages/unsafe/casino_game_card_x1/plain/https://v1.bundlecdn.com/casino-images/v/15104946-3407-452c-be6a-9c7f5110994d_vertical.png@webp" alt="LuckyJet" decoding="async" referrerpolicy="no-referrer"></div>
+<div class="card-head">
+<div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 16v-3m5 3V8m5 8v-5"/></svg></div>
+<span class="tag">Наша страница</span>
+</div>
+<h2 id="ours-title">Наша версия</h2>
+<p class="description">Коэффициенты, история раундов и знакомые настройки.</p>
+<div class="open"><span>Открыть нашу версию</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></div>
+</a>
+<a class="card external" href="https://allpredictor.com/sites/luckyjet" aria-labelledby="external-title">
+<div class="cover"><img src="https://f1w-4561.com/resources/v1/optimizeimages/unsafe/casino_game_card_x1/plain/https://v1.bundlecdn.com/casino-images/v/15104946-3407-452c-be6a-9c7f5110994d_vertical.png@webp" alt="LuckyJet" decoding="async" referrerpolicy="no-referrer"></div>
+<div class="card-head">
+<div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg></div>
+<span class="tag">Allpredictor.com</span>
+</div>
+<h2 id="external-title">AllPredictor</h2>
+<p class="description">Страница LuckyJet на сайте AllPredictor.</p>
+<div class="open"><span>Открыть AllPredictor</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></div>
+</a>
+</nav>
+<footer><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>Выбранная страница откроется в этой вкладке.</footer>
+</main>
+</body>
+</html>
