@@ -1,0 +1,4 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const html=fs.readFileSync('fixed.html','utf8'),config=JSON.parse(html.match(/const FIXED_CLOUD=(\{[^\n]+?\});/)[1]);
+const box={Date,URLSearchParams,AbortSignal,fetch};box.globalThis=box;vm.createContext(box);vm.runInContext(fs.readFileSync('fixed-cloud.js','utf8'),box);
+(async()=>{const feed=box.FixedCloudFeed.create(config),first=await feed.read();assert.ok(first.seeded&&feed.ready());assert.ok(first.rows.length>=5);assert.ok(first.head.coef>=1);console.log(JSON.stringify({source:'Supabase cloud',connected:true,rows:first.rows.length,latest_id:first.head.id,latest_coefficient:first.head.coef,received_at:new Date(first.head.receivedAt).toISOString()}));})().catch(e=>{console.error(e.message);process.exitCode=1});

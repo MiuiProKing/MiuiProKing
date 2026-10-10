@@ -213,6 +213,7 @@ button:active{transform:translateY(1px) scale(.99)}button:disabled{opacity:.55;c
 
   <div class="coef-chart">
     <div class="coef-chart-title">Последние коэффициенты</div>
+    <p id="cloudConnection" role="status" style="font-size:.72rem;opacity:.8;margin-bottom:10px">Подключаю LIVE Supabase…</p>
     <div class="coef-bars" id="coefBars"></div>
   </div>
 
@@ -269,70 +270,10 @@ button:active{transform:translateY(1px) scale(.99)}button:disabled{opacity:.55;c
   </div>
 </div>
 
+<script src="fixed-cloud.js?v=20261010-supabase"></script>
 <script type="module">
-import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, getDoc, serverTimestamp }
-                           from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const app = initializeApp({
-  apiKey:"ap_9697caa2f0c1059dc6eb4b0915e7d5505effdda668162351",
-  authDomain:"allpredictor-firebase.firebaseapp.com",
-  projectId:"allpredictor-firebase",
-  storageBucket:"allpredictor-firebase.firebasestorage.app",
-  messagingSenderId:"6576552969",
-  appId:"1:6576552969:web:c87ad8192187d34d598cd8"
-});
-const db = getFirestore(app);
-
-const WORKING_API_URL="https://crash-gateway-grm-cr.100hp.app/history";
-const WORKING_CUSTOMER_ID="077dee8d-c923-4c02-9bee-757573662e69";
-const WORKING_SESSION_ID="783ee79a-dafc-479e-bf22-834336380cd";
-let apiURL=WORKING_API_URL;
-let headers={
-  "accept":"application/json",
-  "customer-id":WORKING_CUSTOMER_ID,
-  "session-id":WORKING_SESSION_ID
-};
-
-async function sourceWorks(url,testHeaders){
-  try{
-    const res=await fetch(url,{headers:testHeaders,cache:"no-store"});
-    return res.ok;
-  }catch(e){return false;}
-}
-
-async function loadApiKeys(){
-  const candidates=[];
-  try{
-    const snap=await getDoc(doc(db,"config","luckyjet"));
-    if(snap.exists()){
-      const d=snap.data();
-      if(d["api_url"]&&d["customer-id"]&&d["session-id"]){
-        candidates.push({
-          url:d["api_url"],
-          headers:{
-            "accept":"application/json",
-            "customer-id":d["customer-id"],
-            "session-id":d["session-id"]
-          },
-          name:"Firebase"
-        });
-      }
-    }
-  }catch(e){ console.warn("Firebase-конфигурация недоступна, использую резерв:",e); }
-
-  candidates.push({url:WORKING_API_URL,headers:{...headers},name:"резерв"});
-  for(const candidate of candidates){
-    if(await sourceWorks(candidate.url,candidate.headers)){
-      apiURL=candidate.url;
-      headers=candidate.headers;
-      console.info("LuckyJet источник подключён:",candidate.name);
-      return true;
-    }
-  }
-  console.error("LuckyJet: ни один источник не прошёл проверку");
-  return false;
-}
+const FIXED_CLOUD={"url":"https://zulsrqkjkatzjjhacowy.supabase.co","anonKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1bHNycWtqa2F0empqaGFjb3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MzA4NTksImV4cCI6MjEwNzEwNjg1OX0.0MPkQgxa24gjHcXyQf7t-_tfe0g4kdDkC2SXJOxaOso"};
+const cloudFeed=FixedCloudFeed.create(FIXED_CLOUD);
 
 // ==================== РУССКАЯ ОЗВУЧКА ====================
 const VOICE_KEY='lj_voice_enabled';
@@ -494,9 +435,10 @@ const fmt2=n=>n<10?'0'+n:''+n;
 const hhmm=d=>`${fmt2(d.getHours())}:${fmt2(d.getMinutes())}`;
 
 let currentPredicted=null,pending=null,verificationStarted=false,scheduledStart=null;
-const AUTO_FETCH_MS=1000;
+const AUTO_FETCH_MS=2500;
 let autoFetchInterval=null,fetchInProgress=false,lastCoefficient=null,lastFetchTime=null,lastVerifiedCrash=null;
 let lastRoundId=null,historySeeded=false,sourceErrorShown=false;
+const seenCloudRounds=new Set();
 let ignoreFirstCrash=false,lastCrashAt=null,waitingGameEnd=false,postStartCrashSeen=false;
 const lastCoefs=[];
 
@@ -529,7 +471,7 @@ function setStatus(msg,kind,voice){
 function renderHistory(){
   const c=document.getElementById('chipsContainer');c.innerHTML='';
   if(!history.length){const em=document.createElement('div');em.textContent='История пуста.';em.style.opacity=.85;c.appendChild(em);return}
-  history.forEach(it=>{const chip=document.createElement('div');chip.className='chip '+(it.status==='ok'?'ok':'ko');chip.innerHTML=`${Number(it.coef).toFixed(2)}x<small> ${it.status==='ok'?'Успех':'Неудача'} • ${hhmm(new Date(it.time))}</small>`;c.appendChild(chip)})
+  history.forEach(it=>{const chip=document.createElement('div');chip.className='chip '+(it.status==='ok'?'ok':it.status==='unknown'?'':'ko');chip.innerHTML=`${Number(it.coef).toFixed(2)}x<small> ${it.status==='ok'?'Успех':it.status==='unknown'?'Не проверено':'Неудача'} • ${hhmm(new Date(it.time))}</small>`;c.appendChild(chip)})
 }
 
 function getDailyWindow(){const start=Number(localStorage.getItem(DAILY_START_KEY)||0);if(!start)return{start:0,resetAt:0,locked:false};const resetAt=start+86400000;if(Date.now()>=resetAt){localStorage.removeItem(DAILY_LOCK_KEY);localStorage.setItem(DAILY_START_KEY,'');localStorage.setItem(DAILY_USED_KEY,'0');return{start:0,resetAt:0,locked:false}}return{start,resetAt,locked:localStorage.getItem(DAILY_LOCK_KEY)==='1'}}
@@ -538,44 +480,30 @@ function openLock(resetTs){setStatus('🔒 Лимит достигнут.','ko',
 function incDaily(){const start=ensureDaily();const resetAt=start+86400000;let used=Number(localStorage.getItem(DAILY_USED_KEY)||0)+1;localStorage.setItem(DAILY_USED_KEY,String(used));if(used>=DAILY_LIMIT){localStorage.setItem(DAILY_LOCK_KEY,'1');openLock(resetAt);return true}return false}
 (function(){const{start,resetAt,locked}=getDailyWindow();if(locked&&start)openLock(resetAt)})();
 
-function getCoef(item){const v=item?.coef??item?.crash??item?.value??item?.topCoefficient??item?.multiplier;return v!==undefined?Number(v):null}
-
-async function fetchStopCoefficient(){
-  try{
-    if(!apiURL)return null;
-    const res=await fetch(apiURL,{headers,cache:"no-store"});
-    if(!res.ok)throw new Error('Status: '+res.status);
-    const data=await res.json();
-    if(!Array.isArray(data)||!data.length)return null;
-    const latest=data[0];
-    const coef=getCoef(latest);
-    if(coef===null||!Number.isFinite(coef))return null;
-
-    if(!historySeeded){
-      const seed5=data.slice(0,5).map(getCoef).filter(Number.isFinite).reverse();
-      const seed20=data.slice(0,20).map(getCoef).filter(Number.isFinite).reverse();
-      lastCoefs.splice(0,lastCoefs.length,...seed5.slice(-5));
-      marketCoefs.splice(0,marketCoefs.length,...seed20.slice(-MAX_MARKET_COEFS));
-      historySeeded=true;
-      lastRoundId=String(latest?.id??'');
-      sourceErrorShown=false;
-      return {coef,id:lastRoundId,seeded:true};
-    }
-
-    sourceErrorShown=false;
-    return {coef,id:String(latest?.id??''),seeded:false};
-  }catch(e){
-    console.error("Ошибка LuckyJet /history:",e);
-    if(!sourceErrorShown){
-      sourceErrorShown=true;
-      setStatus('⚠️ Источник коэффициентов недоступен: '+e.message,'ko');
-    }
-    return null;
-  }
+function showCloudState(batch){
+ const time=new Date(batch.head.receivedAt).toLocaleTimeString('ru-RU',{timeZone:'Europe/Kyiv',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+ document.getElementById('cloudConnection').textContent='LIVE · Supabase · последний раунд '+time+' · Киев';
+}
+function stopUnverifiedWindow(reason){
+ if(pending){pushHistory({coef:pending.predictedOdds,status:'unknown',time:new Date().toISOString(),reason});renderHistory();}
+ pending=null;verificationStarted=false;scheduledStart=null;currentPredicted=null;btn.disabled=false;
+ waitFreshAnalysis=autoMode;freshRoundsCollected=0;
+ circle.classList.remove('verifying','ok','ko');
+ setStatus('⚠️ Проверка окна остановлена: '+reason+' · результат неизвестен','');
+}
+async function fetchRoundBatch(){
+ try{
+  const batch=await cloudFeed.read();showCloudState(batch);sourceErrorShown=false;return batch;
+ }catch(e){
+  document.getElementById('cloudConnection').textContent='Нет свежего подключения · '+e.message;
+  if(pending)stopUnverifiedWindow(e.message);
+  if(!sourceErrorShown){sourceErrorShown=true;setStatus('⚠️ Источник коэффициентов недоступен: '+e.message,'ko');}
+  return null;
+ }
 }
 
 async function pollLatestRound(){
-  if(fetchInProgress)return;
+  if(fetchInProgress||document.hidden)return;
   fetchInProgress=true;
   try{await fetchAndMaybeStart();}finally{fetchInProgress=false;}
 }
@@ -593,27 +521,35 @@ function tryStart(){
   setStatus('🔥 СТАВЬТЕ СЕЙЧАС — в следующий новый раунд','ok',
             `Сигнал готов! Цель ${currentPredicted.toFixed(2)}. Ставьте в следующий новый раунд.`);
   verificationStarted=true;ignoreFirstCrash=false;lastVerifiedCrash=null;
-  pending={predictedOdds:currentPredicted,currentRound:0};
+  pending={predictedOdds:currentPredicted,currentRound:0,createdAt:Date.now()};
   roundEl.textContent='0';multEl.style.color='#00ff66';multEl.textContent=currentPredicted.toFixed(2)+'X';
   circle.classList.add('verifying');
 }
 
 async function fetchAndMaybeStart(){
-  const round=await fetchStopCoefficient();if(round===null)return;
-  const coef=round.coef;
-  const now=Date.now();
-  const rounded=parseFloat(Number(coef===1?1.01:coef).toFixed(2));
-  if(round.seeded){
-    lastCoefficient=rounded;lastFetchTime=now;lastCrashAt=now;
-    lastEl.textContent=rounded.toFixed(2)+'X';
-    updateMarketUI();
-    setStatus('✅ Данные получены • '+summaryCoefs(),'ok');
-    return;
-  }
+ const batch=await fetchRoundBatch();if(batch===null)return;
+ if(batch.seeded){
+  if(batch.reset)stopUnverifiedWindow('разрыв обновления LIVE');
+  const seed=batch.rows.slice().reverse();
+  lastCoefs.splice(0,lastCoefs.length,...seed.map(r=>r.coef).slice(-5));
+  marketCoefs.splice(0,marketCoefs.length,...seed.map(r=>r.coef).slice(-MAX_MARKET_COEFS));
+  const head=batch.head;lastRoundId=head.id;historySeeded=true;
+  seenCloudRounds.clear();for(const row of batch.rows)seenCloudRounds.add(row.id);
+  lastCoefficient=head.coef;lastFetchTime=Date.now();lastCrashAt=head.receivedAt;
+  lastEl.textContent=head.coef.toFixed(2)+'X';updateMarketUI();
+  if(!batch.reset)setStatus('✅ Данные Supabase получены • '+summaryCoefs(),'ok');
+  return;
+ }
+ for(let i=0;i<batch.rounds.length;i++)applyCloudRound(batch.rounds[i],i===batch.rounds.length-1);
+}
+function applyCloudRound(round,allowAuto){
+ if(seenCloudRounds.has(round.id))return;
+ seenCloudRounds.add(round.id);while(seenCloudRounds.size>200)seenCloudRounds.delete(seenCloudRounds.values().next().value);
+ const rounded=Number(round.coef.toFixed(2)),now=Date.now();
   if(round.id&&round.id===lastRoundId)return;
   if(!round.id&&lastCoefficient===rounded&&lastFetchTime&&(now-lastFetchTime)<15000)return;
   lastRoundId=round.id||lastRoundId;
-  lastCoefficient=rounded;lastFetchTime=now;lastCrashAt=now;
+  lastCoefficient=rounded;lastFetchTime=now;lastCrashAt=round.receivedAt;
   lastCoefs.push(rounded);if(lastCoefs.length>5)lastCoefs.shift();
   marketCoefs.push(rounded);if(marketCoefs.length>MAX_MARKET_COEFS)marketCoefs.shift();
   lastEl.textContent=rounded.toFixed(2)+'X';
@@ -621,11 +557,12 @@ async function fetchAndMaybeStart(){
   if(!pending){
     // После закрытого прогноза этот новый раунд только обновляет рынок.
     // Сигнал, если условия подходят, будет относиться уже к следующему раунду.
-    if(autoMode&&waitFreshAnalysis)analyzeFreshRoundForAuto();
+    if(allowAuto&&autoMode&&waitFreshAnalysis)analyzeFreshRoundForAuto();
     return;
   }
   // Уникальный round.id уже отсекает старый завершённый раунд. Даже если два
   // соседних коэффициента одинаковы, это два разных новых раунда и оба считаются.
+  if(round.receivedAt<=pending.createdAt||(round.timestamp!=null&&round.timestamp<=pending.createdAt)){stopUnverifiedWindow('получен раунд, завершённый до регистрации цели');return;}
   pending.currentRound+=1;roundEl.textContent=pending.currentRound;
 
   if(rounded>=pending.predictedOdds){
@@ -680,7 +617,7 @@ async function fetchAndMaybeStart(){
 }
 
 const LAST_COEF_MIN=1.50;
-function canPredict(){return lastCoefs.length>=5&&lastCoefs.filter(c=>c>LAST_COEF_MIN).length>=3}
+function canPredict(){return cloudFeed.ready()&&lastCoefs.length>=5&&lastCoefs.filter(c=>c>LAST_COEF_MIN).length>=3}
 function summaryCoefs(){return lastCoefs.length===0?'Окно пусто':`[${lastCoefs.map(c=>c.toFixed(2)).join(', ')}] → ${lastCoefs.filter(c=>c>LAST_COEF_MIN).length}/5`}
 function isMarketSafeToPlay(){const a=analyzeMarket();if(isPaused&&!pauseSkipped)return{ok:false,reason:'Пауза активна'};if(a.level==='danger')return{ok:false,reason:a.reason};return{ok:true,reason:a.reason};}
 
@@ -690,6 +627,7 @@ btn.addEventListener('click',()=>{
   if(pending||verificationStarted)return;
   if(isPaused&&!pauseSkipped){document.getElementById('pauseOverlay').classList.add('show');return}
   ensureDaily();startAutoFetch();
+  if(!cloudFeed.ready()){setStatus('⚠️ Сначала дождитесь свежих LIVE коэффициентов Supabase','ko');return;}
   const marketCheck=isMarketSafeToPlay();
   if(!marketCheck.ok){multEl.textContent='⚠️';multEl.style.color='#ef4444';circle.classList.remove('ok','ko');setStatus('🚨 Рынок неблагоприятный — '+marketCheck.reason,'ko');btn.disabled=false;return;}
   if(!canPredict()){multEl.textContent='Анализ..';multEl.style.color='#f4a51c';circle.classList.remove('ok','ko');circle.classList.add('verifying');setStatus('Условия не выполнены • '+summaryCoefs(),'');btn.disabled=false;return;}
@@ -796,13 +734,14 @@ document.getElementById('resetStats').addEventListener('click',()=>{counts={ok:0
 document.getElementById('resetHistory').addEventListener('click',()=>{history=[];saveHistory();renderHistory();document.getElementById('settingsMsg').textContent='История сброшена.'});
 
 async function bootApp() {
-  await loadApiKeys();
+  await pollLatestRound();
   refreshUI();
   btn.disabled = false;
   startAutoFetch();
   updateMarketUI();
 }
 
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)pollLatestRound()});
 bootApp();
 document.getElementById('appWrap').style.display = 'flex';
 document.getElementById('voiceToggle').style.display = 'flex';
