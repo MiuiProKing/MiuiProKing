@@ -1,0 +1,5 @@
+gateway-connection.json
+.env
+.env.*
+*.local.json
+__pycache__/
