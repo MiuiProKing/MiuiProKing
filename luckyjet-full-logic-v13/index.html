@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080a11">
+<meta name="description" content="Самостоятельная панель LuckyJet: открытые формулы De и Ce, история, интервалы, график, импорт и API.">
+<meta name="referrer" content="no-referrer">
+<title>LuckyJet — Коэффициенты · V1.3</title>
+<style>:root{color-scheme:dark;--bg:#080a11;--panel:#10131e;--line:#242837;--muted:#8d93aa;--ink:#f2f3fc;--violet:#9a79ff;--cyan:#63c4ff;--gold:#f8c578;--green:#66d3ae;--pink:#f39ac6;--radius:18px;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}button,input,select{font:inherit}button,a,input,select,summary{-webkit-tap-highlight-color:transparent}button{cursor:pointer}a{color:var(--violet);text-decoration:none}a:hover{text-decoration:underline}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #bcabff;outline-offset:4px}button{color:inherit}button:disabled{opacity:.5;cursor:default}[hidden]{display:none!important}.icon-defs{position:absolute;width:0;height:0;overflow:hidden}.icon{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.app{min-height:100vh}.sidebar{width:232px;position:fixed;inset:0 auto 0 0;z-index:20;border-right:1px solid #1d202e;background:#0c0e16;display:flex;flex-direction:column;padding:31px 19px 22px}.brand{display:flex;align-items:center;gap:11px;color:var(--ink);padding:0 10px}.brand:hover{text-decoration:none}.brand-mark{display:grid;place-items:center;width:37px;height:42px;border:1px solid #6350a9;border-radius:12px;background:linear-gradient(145deg,#5f479c,#251d41);color:#e0d6ff;box-shadow:0 5px 25px #6e4cb522;transform:rotate(-5deg)}.brand-mark .icon{width:24px;height:24px}.brand b{font-size:20px;letter-spacing:-.8px;font-weight:850}.brand b span{font-weight:450;color:#b7a2fa}.brand small{display:block;font-size:9px;letter-spacing:1.75px;color:#70768b;margin-top:1px}.nav-label{font-size:9px;letter-spacing:1.5px;color:#595f73;margin:48px 12px 14px}.navigation{display:grid;gap:7px}.nav-item{display:flex;align-items:center;gap:11px;width:100%;border:1px solid transparent;background:transparent;color:#969bb0;padding:12px;border-radius:11px;text-align:left;font-size:12px;white-space:nowrap}.nav-item .icon{width:17px;height:17px}.nav-item em{margin-left:auto;font-size:9px;font-style:normal;color:#6b6788;letter-spacing:.1px}.nav-item:hover{background:#171a26;color:#d9dbeb}.nav-item.active{background:linear-gradient(90deg,#292039,#1b192b);color:#c9b8ff;border-color:#42315e}.nav-item.active em{color:#ad90e6}.sidebar-bottom{margin-top:auto;padding-top:50px}.source-mini{display:flex;gap:9px;align-items:center;padding:15px 12px;border:1px solid #252837;border-radius:11px;margin-bottom:15px;background:#12151f}.source-mini strong{font-size:10px;font-weight:500;display:block}.source-mini small{font-size:9px;color:#6a7189;display:block;margin-top:3px}.sidebar-bottom>p{font-size:10px;color:#5e657c;line-height:1.7;padding:0 12px;margin-top:21px}.workspace{margin-left:232px}.topbar{height:78px;padding:0 40px;border-bottom:1px solid #1a1e2a;display:flex;align-items:center;justify-content:space-between}.breadcrumb{display:flex;gap:16px;align-items:center;font-size:11px}.breadcrumb>span:first-child{color:#737990}.breadcrumb strong{font-weight:500}.separator{color:#35394d}.version-pill{font-size:9px;letter-spacing:1px;padding:3px 8px;border:1px solid #393047;border-radius:5px;color:#bfa9ef;background:#211a2b}.topbar-right{display:flex;gap:23px;align-items:center}.clock-label{display:flex;gap:10px;align-items:center;font-size:13px;font-variant-numeric:tabular-nums}.clock-label small{font-size:8px;letter-spacing:1px;color:#6a728b}.icon-button{display:grid;place-items:center;background:#161925;border:1px solid #2b3041;border-radius:9px;width:34px;height:34px;color:#a9acc0}.icon-button:hover{background:#242637;color:#e8dcff}.icon-button .icon{width:16px;height:16px}main{max-width:1570px;margin:auto;padding:36px 40px 20px}.view{display:none}.view.active{display:block}.page-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:27px}.eyebrow{font-size:9px;font-weight:600;letter-spacing:1.65px;color:#8a82a9;display:flex;align-items:center;gap:7px}.eyebrow .icon{width:13px;height:13px}h1{font-size:32px;font-weight:650;letter-spacing:-1.1px;line-height:1.2;margin:9px 0}h2{font-size:15px;font-weight:600;letter-spacing:-.15px;margin:0}.page-heading p{color:var(--muted);font-size:12px;margin:10px 0 0}.mobile-break{display:none}.heading-actions,.inline-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.button{display:inline-flex;justify-content:center;align-items:center;gap:9px;border:1px solid transparent;border-radius:10px;min-height:39px;padding:10px 15px;font-size:11px;font-weight:550;white-space:nowrap;transition:background .15s,transform .15s}.button .icon{width:15px;height:15px}.button:active{transform:translateY(1px)}.button.primary{background:#a38af6;color:#120d22;border-color:#b29aff;box-shadow:0 3px 16px #8e65ed13}.button.primary:hover{background:#baa4ff}.button.secondary{background:#151823;border-color:#2d3243;color:#c5c9d8}.button.secondary:hover{background:#242637}.text-button{border:0;background:none;color:#ad95e9;font-size:10px;padding:0;display:inline-flex;gap:6px;align-items:center}.text-button .icon{width:13px;height:13px}.text-button:hover{color:#e1d6ff}.feed-line{display:flex;align-items:center;gap:13px;margin-bottom:23px;font-size:10px;color:#777e95}.status-pill{display:inline-flex;align-items:center;gap:7px;border:1px solid #303345;background:#151923;border-radius:6px;padding:5px 8px;font-size:8px;font-weight:700;letter-spacing:.8px;color:#a1a7bd}.status-pill.live{border-color:#295546;background:#11291f;color:#7adbb8}.status-pill.archive{border-color:#5d4930;background:#241e17;color:#dcb67a}.status-pill.error{border-color:#624451;background:#2b1b25;color:#e9a0bd}.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#767e96;flex-shrink:0}.live .dot,.dot.live{background:#6ed7aa;box-shadow:0 0 0 3px #6ed7aa14}.dot.archive{background:#edb96c}.dot.error{background:#ec8caf}.feed-time{margin-left:auto;font-variant-numeric:tabular-nums;font-size:9px}.notice{background:#181727;border:1px solid #34304a;border-left:3px solid #9676d9;color:#bcb7ce;border-radius:10px;padding:13px 16px;font-size:11px;line-height:1.75;margin-bottom:20px}.onboarding{display:flex;gap:22px;align-items:flex-start;padding:28px;border:1px dashed #454056;border-radius:var(--radius);background:linear-gradient(120deg,#1a1727,#10131d);margin-bottom:22px}.onboarding-glyph{display:grid;place-items:center;width:46px;height:46px;border:1px solid #4d426c;background:#2d2442;border-radius:13px;color:#c9b1f8;flex-shrink:0}.onboarding-glyph .icon{width:23px;height:23px}.onboarding h2{font-size:19px}.onboarding p{font-size:12px;max-width:680px;color:#9a9bb3;line-height:1.8;margin:9px 0 17px}.onboarding .text-button{padding:7px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px}.metric{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px 20px 14px;position:relative;overflow:hidden}.metric>span{font-size:10px;color:#8f96ad}.metric>div{font-size:31px;letter-spacing:-1px;font-weight:550;margin:9px 0 6px;font-variant-numeric:tabular-nums}.metric small{font-size:17px;color:#6f7691;margin-left:4px;font-weight:400}.metric p{color:#5f9e8e;font-size:9px;margin:0;white-space:nowrap}.metric.gold>div{color:var(--gold)}.metric.gold p{color:#918471}.metric.gold:after{content:"";position:absolute;right:-25px;top:-45px;width:120px;height:120px;background:#edb26806;border-radius:50%;filter:blur(15px)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}.panel-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}.panel-top h2{font-size:13px}.panel-subtitle{font-size:9px;color:#727a92;margin:5px 0 0}.analysis-layout{display:grid;grid-template-columns:1.6fr 1fr;gap:17px;margin-bottom:20px}.prediction-panel{background:radial-gradient(ellipse at 20% 35%,#25203b88,transparent 75%),#12131f;border-color:#413451;position:relative;overflow:hidden;padding:24px}.prediction-panel:before{content:"";position:absolute;inset:0 auto 0 0;width:2px;background:linear-gradient(0deg,transparent,#9a77dd,transparent)}.tag{font-size:8px;font-weight:550;letter-spacing:.6px;border:1px solid #36354a;border-radius:5px;padding:4px 7px;color:#b1a2cf;background:#26203788;white-space:nowrap}.tag.live{border-color:#38614c;color:#8cd6b1;background:#182b23}.prediction-body{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 4px 17px}.card-label{font-size:10px;color:#9a93ad;margin:0 0 5px}.target-number{font-size:74px;line-height:1.05;letter-spacing:-4px;font-weight:550;font-variant-numeric:tabular-nums;color:#f1eaff;text-shadow:0 0 35px #a884ff16}.target-number span{font-size:42px;color:#9b87be;margin-left:6px}.pattern-tag{display:inline-block;font-size:9px;color:#b4a6ce;border:1px solid #40374e;padding:4px 8px;border-radius:5px;margin-top:12px;max-width:100%}.score-block{text-align:center;padding:0 3px;flex-shrink:0}.score-ring{--score:0deg;background:conic-gradient(#b39afa var(--score),#30293e 0);width:86px;height:86px;border-radius:50%;display:grid;place-items:center;position:relative;margin:0 auto 9px}.score-ring:before{content:"";position:absolute;inset:5px;border-radius:50%;background:#171522}.score-ring span{position:relative;font-size:27px;font-weight:450;font-variant-numeric:tabular-nums}.score-block small{font-size:7px;letter-spacing:.7px;color:#9990ac}.window-row{display:flex;align-items:center;gap:28px;border-block:1px solid #383043;padding:13px 0}.window-row>div>span,.big-info span{display:block;font-size:9px;color:#837e99;margin-bottom:4px}.window-row strong{font-size:13px;font-weight:450;font-variant-numeric:tabular-nums}.window-row .icon-button{margin-left:auto;border-color:#3c314d;background:#252031}.basis{font-size:9px;color:#8f859f;line-height:1.75;margin:13px 0 10px;min-height:16px}.card-foot{display:flex;gap:7px;align-items:center;font-size:8px;color:#736b87}.tiny-dot{width:4px;height:4px;border-radius:50%;background:#9b86b9}.card-foot .text-button{margin-left:auto;font-size:9px}.big-panel{background:radial-gradient(ellipse at 95% 5%,#50362125,transparent 65%),#14151d;border-color:#44382a;padding:24px}.gold-text{color:#bca176}.big-target{font-size:52px;letter-spacing:-2px;line-height:1;margin:23px 0 12px;color:#eed3a2;font-weight:500}.big-target span{font-size:32px;color:#997953;margin-left:4px}.big-panel h2{font-size:13px;color:#ccba9d;font-weight:500}.big-panel>p{font-size:10px;line-height:1.8;color:#908575;margin:9px 0 17px;min-height:36px}.big-info{display:flex;gap:30px;justify-content:space-between;padding-top:13px;border-top:1px solid #3b342c}.big-info strong{font-size:12px;color:#d5be98;font-weight:500;font-variant-numeric:tabular-nums}.big-note{font-size:8px;color:#726857;margin-top:15px}.gold-tag{color:#d3b88a;border-color:#5e4d32;background:#2e271b}.chart-panel{padding-bottom:15px;margin-bottom:20px}.compact-select select{background:#191d29;border:1px solid #303548;border-radius:7px;padding:6px 9px;color:#a1a9bf;font-size:9px;max-width:140px}.chart-wrap{height:187px;position:relative}.chart-wrap svg{width:100%;height:100%;display:block}.empty-chart{display:grid;place-items:center;height:100%;color:#4e576f;font-size:11px;background:repeating-linear-gradient(0deg,transparent,transparent 42px,#252a3744 43px,#252a3744 44px)}.chart-footer{display:flex;gap:16px;align-items:center;justify-content:space-between;font-size:8px;color:#697189;padding-top:7px}.legend{display:flex;gap:18px;flex-wrap:wrap}.legend span{display:flex;align-items:center;gap:6px}.legend i{width:5px;height:5px;border-radius:2px}.blue-bg{background:var(--cyan)}.purple-bg{background:var(--violet)}.gold-bg{background:var(--gold)}.pink-bg{background:var(--pink)}.lower-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:17px}.gap-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;padding-bottom:17px;border-bottom:1px solid #272c3b;margin-bottom:5px}.gap-summary span{display:block;font-size:8px;color:#7b849a;margin-bottom:7px}.gap-summary strong{font-weight:450;font-size:15px;font-variant-numeric:tabular-nums}.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap;text-align:left}th{font-size:8px;letter-spacing:.3px;color:#667088;font-weight:500;padding:13px 10px 11px;border-bottom:1px solid #282d3b}td{font-size:10px;padding:12px 10px;border-bottom:1px solid #202532;color:#a4adc2;font-variant-numeric:tabular-nums}tbody tr:last-child td{border-bottom:0}td:first-child,th:first-child{padding-left:0}td:last-child,th:last-child{padding-right:0}.empty-cell{text-align:center;white-space:normal;padding:26px!important;color:#616b84;font-size:11px}.table-note{font-size:8px;color:#626b80;margin:14px 0 0;line-height:1.7}.coef-pill{display:inline-flex;justify-content:center;border:1px solid #294c62;background:#142c3a;color:#89cbf0;padding:4px 7px;font-size:9px;border-radius:5px;font-weight:550;min-width:49px}.coef-pill.purple{border-color:#4f3e72;background:#292038;color:#c8acf2}.coef-pill.gold{border-color:#5b4b2e;background:#322919;color:#eac888}.coef-pill.pink{border-color:#603d56;background:#352034;color:#efadd4}.round-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;min-height:102px;align-content:start;margin:7px 0 17px}.round-card{display:flex;align-items:center;flex-direction:column;padding:9px 3px;border:1px solid #25384d;background:#102032;border-radius:8px;min-width:0}.round-card b{font-weight:500;font-size:11px;color:#9ac8eb;letter-spacing:-.2px}.round-card small{font-size:6px;color:#657e96;margin-top:5px;white-space:nowrap}.round-card.purple{background:#241e34;border-color:#47345f}.round-card.purple b{color:#c4a8ed}.round-card.purple small{color:#82739d}.round-card.gold{background:#30271b;border-color:#5a4830}.round-card.gold b{color:#efcd8d}.round-card.pink{background:#312031;border-color:#57364f}.round-card.pink b{color:#e9a8cc}.streak-row{display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#788399;padding:11px 0;border-top:1px solid #252a38}.streak-row strong{color:#ccd1df;font-weight:500;font-size:12px}.quiet-note{color:#626c82;font-size:8px;line-height:1.8;margin:12px 0 0}.dashboard-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0 7px;font-size:8px;color:#535d74}.dashboard-footer .text-button{font-size:8px}.filter-row{display:flex;align-items:end;gap:14px;margin-bottom:15px}.filter-row label{font-size:9px;color:#828da7}.filter-row input{display:block;margin-top:7px;background:#0c101a;border:1px solid #30384c;border-radius:8px;padding:10px;color:#cbd2e5;min-height:39px;width:160px;font-size:11px}.filter-row .search-field{flex:1}.filter-row .search-field input{width:100%}.filter-row .button{font-size:10px;min-height:39px}.history-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:20px;color:#7f89a3;font-size:10px}.source-date{font-size:10px;color:#8d859f}.journal-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:17px;margin-bottom:20px}.journal-summary span{font-size:11px;color:#8792a8}.journal-summary strong{display:block;font-size:31px;font-weight:450;margin-top:9px}.journal-summary>div:first-child strong{color:var(--green)}.result-hit{color:#7ed6b4}.result-pending{color:#c4aafa}.result-unknown{color:#aaa0a8}.logic-columns{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}.prose{margin-bottom:18px}.logic-columns .prose{margin-bottom:0}.prose h2{font-size:16px}.prose p{font-size:12px;line-height:1.9;color:#929cb2;margin:15px 0}.prose code{color:#b5a6db;font-size:11px;overflow-wrap:anywhere}.prose pre{max-height:380px;overflow:auto;background:#0b0e17;border:1px solid #2b3243;padding:16px;border-radius:9px;font-size:10px;color:#ada0c9;line-height:1.8;white-space:pre-wrap;word-break:break-word}.prose .hash{font-size:9px;color:#6d7690;word-break:break-all}.prose td{white-space:normal;line-height:1.8}.prose td:first-child{min-width:150px}.rule-list{list-style:none;counter-reset:rule;margin:21px 0;padding:0}.rule-list li{position:relative;padding-left:38px;margin-bottom:23px;counter-increment:rule}.rule-list li:before{content:"0" counter(rule);position:absolute;left:0;top:1px;color:#a58fcd;font-size:10px;font-weight:500}.rule-list b{display:block;font-size:12px;font-weight:550;color:#d0c7e0;margin-bottom:6px}.rule-list span{font-size:11px;color:#7f8ba2;line-height:1.8;display:block}.prose .formula{padding:12px 15px;background:#191726;border:1px solid #353048;border-radius:9px;color:#bda8e6;font-size:11px}.prose details{border-top:1px solid #2b3041;padding-top:16px;margin-top:18px}.prose summary{font-size:12px;color:#b7a0e3;cursor:pointer}.modal-backdrop{position:fixed;inset:0;background:#03050bd9;backdrop-filter:blur(9px);z-index:100;overflow:auto;display:flex;align-items:center;justify-content:center;padding:24px}.modal{width:510px;max-width:100%;max-height:calc(100dvh - 48px);overflow:auto;border:1px solid #47415b;background:#131622;border-radius:20px;padding:28px;box-shadow:0 35px 100px #0008}.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px}.modal-header h2{font-size:21px;letter-spacing:-.5px;margin-top:6px}.modal label{display:block;font-size:11px;color:#8f9bb3;margin-bottom:17px}.modal label>input:not([type=checkbox]),.modal select{display:block;width:100%;margin-top:7px;background:#0b0f19;border:1px solid #343c51;color:#cbd1e4;border-radius:9px;min-height:43px;padding:11px 12px;font-size:12px}.modal .optional{font-size:8px;color:#646e86;margin-left:6px}.modal .check-label{display:flex;align-items:center;gap:9px;font-size:10px;min-height:24px}.check-label input{accent-color:#b498f3;width:15px;height:15px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-note{font-size:10px;line-height:1.8;color:#727f98}.form-error{color:#ed9caf;font-size:11px;margin:14px 0;line-height:1.8}.modal-actions{display:flex;justify-content:space-between;gap:10px;margin-top:22px}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);max-width:min(580px,90vw);z-index:150;padding:13px 20px;border-radius:10px;border:1px solid #514267;background:#231d32;box-shadow:0 8px 35px #0006;color:#dcccf8;font-size:12px;line-height:1.7}.toast.error{border-color:#633e51;background:#301d2c;color:#f4b4cf}@media(min-width:1500px){main{padding-inline:52px}.topbar{padding-inline:52px}.metrics{gap:17px}.metric{padding-block:21px}.target-number{font-size:82px}.chart-wrap{height:215px}}@media(max-width:1190px){.sidebar{width:194px;padding-inline:12px}.workspace{margin-left:194px}.brand{padding-inline:9px;gap:9px}.brand b{font-size:17px}.brand small{font-size:7px}.nav-item{font-size:10px;padding-inline:10px;gap:8px}.nav-item em{font-size:8px}.topbar{padding-inline:25px}main{padding:30px 25px 16px}.analysis-layout,.lower-grid{grid-template-columns:1.4fr 1fr}.metric{padding:15px 13px}.metric>span{font-size:9px}.metric>div{font-size:28px}.metric p{font-size:8px}.prediction-panel,.big-panel{padding:21px}.target-number{font-size:64px}.score-ring{width:73px;height:73px}.score-block small{font-size:6px}.panel{padding:19px}.window-row{gap:15px}.window-row strong{font-size:11px}.round-grid{grid-template-columns:repeat(4,1fr)}.legend{gap:11px}h1{font-size:29px}.page-heading p{font-size:11px}.big-target{font-size:49px}.gap-summary{gap:9px}.gap-summary span{font-size:7px}.gap-summary strong{font-size:12px}.dashboard-footer{flex-wrap:wrap}.logic-columns{grid-template-columns:1fr}.prose .panel-top{flex-wrap:wrap}}@media(max-width:900px){.sidebar{width:70px;padding:25px 10px 18px}.brand{padding:0;justify-content:center}.brand>span:last-child,.nav-label,.nav-item span,.nav-item em,.sidebar-bottom .source-mini,.sidebar-bottom>p{display:none}.navigation{margin-top:40px;gap:12px}.nav-item{justify-content:center;padding:13px}.nav-item .icon{width:20px;height:20px}.sidebar-bottom{padding-top:30px}.workspace{margin-left:70px}.analysis-layout,.lower-grid{grid-template-columns:1.45fr 1fr}.page-heading{align-items:flex-start}.heading-actions{padding-top:15px}.score-block small{max-width:70px;display:block;line-height:1.8}.metric>span{font-size:8px}.panel-top h2{font-size:11px}.gap-summary{grid-template-columns:1fr 1fr}.gap-summary>div:last-child{display:none}.chart-footer{font-size:7px}.recent-panel .round-grid{grid-template-columns:repeat(3,1fr)}.feed-description{max-width:250px}.feed-line{font-size:9px}.prediction-body{padding-inline:0;gap:8px}.target-number{font-size:59px}.target-number span{font-size:32px}.score-ring{width:66px;height:66px}.score-ring span{font-size:22px}.pattern-tag{font-size:8px}.eyebrow{font-size:8px;letter-spacing:1px}.filter-row{flex-wrap:wrap}.filter-row .search-field{min-width:180px}.big-info{gap:15px}.big-info strong{font-size:10px}.big-panel>p{min-height:55px}.big-target{font-size:45px}.big-panel h2{font-size:12px}.big-note{font-size:7px}}@media(max-width:680px){.sidebar{inset:auto 0 0 0;width:100%;height:64px;padding:7px 8px 8px;border-top:1px solid #2b2a3b;border-right:0;background:#10121ef5;backdrop-filter:blur(18px)}.brand,.sidebar-bottom{display:none}.navigation{display:flex;margin:0;gap:4px;justify-content:space-around;height:100%}.nav-item{flex:1;flex-direction:column;gap:3px;border:0;border-radius:9px;padding:6px 3px;font-size:7px;line-height:1.1}.nav-item span{display:block;font-size:7px;letter-spacing:0}.nav-item .icon{width:17px;height:17px}.nav-item.active{background:#292138}.workspace{margin-left:0}.topbar{height:62px;padding:0 18px}.breadcrumb{gap:11px;font-size:10px}.breadcrumb>span:first-child,.separator{display:none}.topbar-right{gap:14px}.clock-label{font-size:12px;gap:7px}.clock-label small{font-size:7px}.topbar .icon-button{width:31px;height:31px}main{padding:25px 16px 85px}.page-heading{flex-wrap:wrap;gap:16px;margin-bottom:20px}.page-heading h1{font-size:29px}.page-heading p{font-size:10px;line-height:1.8;max-width:300px}.heading-actions{padding-top:0;margin-left:0;gap:8px}.heading-actions .button{min-height:35px;font-size:10px;padding:9px 13px}.feed-line{gap:9px;flex-wrap:wrap;margin-bottom:18px;font-size:9px}.feed-time{display:none}.feed-line>span:nth-child(2){max-width:250px;font-size:8px}.metrics{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px}.metric{padding:15px 17px 13px;border-radius:12px}.metric>span{font-size:9px}.metric>div{font-size:30px;margin:7px 0 6px}.metric small{font-size:15px}.metric p{font-size:8px}.analysis-layout,.lower-grid{grid-template-columns:1fr;gap:14px;margin-bottom:15px}.panel{padding:20px 17px;border-radius:15px}.prediction-panel{padding:21px}.eyebrow{font-size:8px;letter-spacing:1px}.panel-top{margin-bottom:19px}.target-number{font-size:75px}.target-number span{font-size:39px}.score-ring{width:78px;height:78px}.score-ring span{font-size:26px}.score-block small{font-size:6px;max-width:100px}.prediction-body{padding-bottom:18px}.window-row{gap:25px}.window-row strong{font-size:12px}.basis{font-size:9px}.big-panel{padding:22px}.big-panel .panel-top{margin-bottom:17px}.big-target{font-size:49px;margin:19px 0 11px}.big-panel>p{min-height:unset;font-size:10px;max-width:100%}.big-info strong{font-size:12px}.big-note{font-size:8px}.chart-panel{margin-bottom:15px}.chart-wrap{height:160px}.chart-panel .panel-top{align-items:flex-start}.chart-panel .panel-top h2{font-size:13px}.panel-subtitle{font-size:8px;max-width:175px;line-height:1.7}.chart-footer{align-items:flex-start;gap:7px;flex-direction:column}.legend{gap:14px;font-size:7px}.gap-summary{grid-template-columns:repeat(3,1fr);gap:8px}.gap-summary>div:last-child{display:block}.gap-summary span{font-size:7px}.gap-summary strong{font-size:12px}.table-note{font-size:8px}.recent-panel .round-grid{grid-template-columns:repeat(5,1fr);gap:6px}.round-card{padding:10px 3px}.round-card b{font-size:11px}.round-card small{font-size:6px}.dashboard-footer{font-size:8px;gap:10px;align-items:flex-start;flex-direction:column;padding-top:5px}.dashboard-footer .text-button{font-size:9px}.onboarding{padding:21px;gap:14px;display:block}.onboarding-glyph{width:35px;height:35px;margin-bottom:15px}.onboarding-glyph .icon{width:18px;height:18px}.onboarding h2{font-size:17px}.onboarding p{font-size:11px;line-height:1.9}.onboarding .inline-actions{gap:9px}.onboarding .button{font-size:10px;padding:9px 12px}.onboarding .text-button{font-size:9px;padding-left:0;margin-top:3px}.notice{font-size:10px;line-height:1.8;padding:12px 14px}.filter-row{gap:12px}.filter-row input{width:100%;min-width:0}.filter-row label{flex:1;min-width:125px}.filter-row .search-field{flex-basis:100%;min-width:0}.filter-row .button{padding-inline:18px}.journal-summary{gap:9px}.journal-summary .panel{padding:15px 12px}.journal-summary span{font-size:8px}.journal-summary strong{font-size:27px}.logic-columns{gap:15px;margin-bottom:15px}.prose h2{font-size:15px}.prose p{font-size:11px}.rule-list li{padding-left:32px}.rule-list span{font-size:10px}.rule-list b{font-size:11px}.source-date{font-size:9px}.prose .panel-top{gap:10px}.prose pre{font-size:9px}.prose td:first-child{min-width:100px}.modal-backdrop{padding:15px}.modal{padding:22px;max-height:calc(100dvh - 30px);border-radius:17px}.modal-header h2{font-size:20px}.modal-actions{flex-direction:column-reverse}.modal-actions .button{width:100%}.modal label{font-size:10px}.modal input,.modal select{font-size:16px!important}.modal .form-grid select{font-size:12px!important}.toast{bottom:80px;font-size:11px;width:max-content}.mobile-break{display:block}.page-heading .source-date{display:none}}@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}@media print{.sidebar,.topbar,.heading-actions,.card-foot,.modal-backdrop,.toast{display:none!important}.workspace{margin:0}.view:not(.active){display:none}body{background:white;color:#111}.panel,.metric{break-inside:avoid;background:#fafafa;border-color:#aaa}main{padding:0}.dashboard-footer{color:#333}}
+
+/* LIVE COEFFICIENTS */
+.live-coefficients{margin:0 0 20px;border-color:#425477;background:radial-gradient(ellipse at 0 0,#1b294766,transparent 70%),#101521}
+.live-coefficients-header{display:flex;justify-content:space-between;align-items:center;gap:12px}.live-coefficients-header h2{font-size:16px;letter-spacing:-.3px}
+.live-coefficient-hero{display:flex;align-items:baseline;gap:18px;margin:12px 0 16px}.live-coefficient-value{font-size:55px;line-height:1.1;font-weight:750;letter-spacing:-2px;font-variant-numeric:tabular-nums;color:#ecf3ff}.live-coefficient-value.blue{color:#8bcaff}.live-coefficient-value.purple{color:#c1a4ff}.live-coefficient-value.gold{color:#ffcf7e}.live-coefficient-value.pink{color:#ffb2d4}.live-coefficient-hero>span{font-size:11px;color:#9faec5}
+.live-coefficients-list{display:flex;flex-wrap:wrap;gap:8px;min-height:36px}.live-coefficient-chip{display:flex;align-items:center;justify-content:center;padding:9px 13px;border:1px solid #35516d;border-radius:10px;background:#142639;color:#9dcdff;font-weight:750;font-size:14px;font-variant-numeric:tabular-nums}.live-coefficient-chip.purple{color:#d7c4ff;border-color:#554478;background:#2a2040}.live-coefficient-chip.gold{color:#ffe1a4;border-color:#776037;background:#362b18}.live-coefficient-chip.pink{color:#ffd2e9;border-color:#855575;background:#3a2034}.live-coefficient-chip.latest{box-shadow:0 0 0 2px #dde8ff44}.live-feed-empty{font-size:12px;color:#8e9bb2;line-height:36px}
+.live-coefficients-footer{display:flex;align-items:center;gap:16px;justify-content:space-between;margin-top:18px;padding-top:13px;border-top:1px solid #29374c}.live-coefficients-footer p{margin:0;font-size:11px;color:#a2b1c8;line-height:1.7;overflow-wrap:anywhere}.live-coefficients-footer .button{flex-shrink:0}.live-connection-error{margin-top:12px;padding:12px;border:1px solid #734c60;border-radius:9px;background:#321d2a;color:#ffb6d2;font-size:12px}.live-connection-error .text-button{display:block;margin-top:8px;font-size:12px}
+@media(max-width:680px){.live-coefficients{padding:17px 14px;margin-bottom:16px}.live-coefficients-header h2{font-size:14px}.live-coefficients-header .status-pill{font-size:7px;letter-spacing:.3px}.live-coefficient-hero{margin:12px 0 16px;gap:12px}.live-coefficient-value{font-size:49px}.live-coefficient-hero>span{font-size:10px;max-width:105px}.live-coefficients-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.live-coefficient-chip{font-size:12px;padding:9px 3px;border-radius:8px}.live-feed-empty{grid-column:1/-1;font-size:11px;line-height:1.8}.live-coefficients-footer{align-items:flex-start;flex-direction:column;gap:9px;margin-top:14px}.live-coefficients-footer p{font-size:10px}.live-coefficients-footer .button{font-size:10px;min-height:33px;padding:8px 11px}.page-heading{margin-bottom:17px}.page-heading h1{font-size:25px}.page-heading p{display:none}.heading-actions{gap:7px}}
+@media(max-width:340px){.live-coefficients-list{grid-template-columns:repeat(4,minmax(0,1fr))}.live-coefficients-header{align-items:flex-start;flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+<svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="m10 13 4-4m-6 7-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m2 2 1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="8" cy="7" r="3"/><circle cx="16" cy="17" r="3"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-4 4 4-4 4 4M4 16v5h16v-5"/></symbol>
+<symbol id="i-zap" viewBox="0 0 24 24"><path d="m13 2-10 12h8l-1 8 11-13h-8z"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 13 8-13 8z"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 4v16M16 4v16"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M5 19 19 5"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></symbol>
+</defs></svg>
+<div class="app">
+<aside class="sidebar">
+  <a class="brand" href="#dashboard" aria-label="LuckyJet — обзор"><span class="brand-mark"><svg class="icon"><use href="#i-zap"/></svg></span><span><b>LUCKY<span>JET</span></b><small>FULL LOGIC · V1.3</small></span></a>
+  <div class="nav-label">РАБОЧАЯ ПАНЕЛЬ</div>
+  <nav class="navigation" aria-label="Основная навигация">
+    <button class="nav-item active" data-tab="dashboard"><svg class="icon"><use href="#i-grid"/></svg><span>Обзор</span><em>01</em></button>
+    <button class="nav-item" data-tab="history"><svg class="icon"><use href="#i-clock"/></svg><span>История раундов</span><em id="nav-count">0</em></button>
+    <button class="nav-item" data-tab="journal"><svg class="icon"><use href="#i-check"/></svg><span>Журнал окон</span></button>
+    <button class="nav-item" data-tab="logic"><svg class="icon"><use href="#i-code"/></svg><span>Вся логика</span><em>De / Ce</em></button>
+    <button class="nav-item" data-tab="sources"><svg class="icon"><use href="#i-link"/></svg><span>Источники</span></button>
+  </nav>
+  <div class="sidebar-bottom"><div class="source-mini"><span class="dot" id="side-dot"></span><div><strong id="side-status">Данные не подключены</strong><small id="side-source">API · JSON · CSV</small></div></div><button class="nav-item" data-action="settings"><svg class="icon"><use href="#i-settings"/></svg><span>Подключение и настройки</span></button><p>Формулы из открытого клиентского модуля. Расчёты выполняются в вашем браузере.</p></div>
+</aside>
+<div class="workspace">
+<header class="topbar"><div class="breadcrumb"><span>Аналитика</span><span class="separator">/</span><strong>LuckyJet</strong><span class="version-pill">V1.3 · De + Ce</span></div><div class="topbar-right"><span class="clock-label"><span id="kyiv-clock">--:--:--</span><small>КИЕВ</small></span><button class="icon-button" data-action="settings" aria-label="Настройки"><svg class="icon"><use href="#i-settings"/></svg></button></div></header>
+<main>
+  <section id="view-dashboard" class="view active" aria-labelledby="dashboard-title">
+    <div class="page-heading"><div><div class="eyebrow">LUCKYJET ANALYTICS</div><h1 id="dashboard-title">Каждый раунд.<br class="mobile-break"> Вся картина.</h1><p>История, циклы и расчётные окна в одной панели.</p></div><div class="heading-actions"><button class="button secondary" data-action="import"><svg class="icon"><use href="#i-upload"/></svg>Импорт</button><button class="button primary" id="run-button" data-action="toggle-run"><svg class="icon"><use href="#i-play"/></svg><span>Подключить API</span></button></div></div>
+    <section class="panel live-coefficients" aria-labelledby="live-coefficients-heading">
+      <div class="live-coefficients-header"><h2 id="live-coefficients-heading">Коэффициенты LuckyJet</h2><span class="status-pill" id="live-coefficients-status">ЗАГРУЗКА API</span></div>
+      <div class="live-coefficient-hero"><strong id="live-coefficient-value" class="live-coefficient-value">—</strong><span id="live-coefficient-caption">Коэффициенты ещё не загружены</span></div>
+      <div class="live-coefficients-list" id="live-coefficients-list" aria-label="Последние 20 коэффициентов"><span class="live-feed-empty">Здесь появятся последние 20 коэффициентов</span></div>
+      <div class="live-coefficients-footer"><p id="live-connection-message" role="status">JavaScript ещё не запущен. Скачайте HTML и откройте его в Safari или Chrome, чтобы получать коэффициенты.</p><button class="button secondary" data-action="reconnect">Переподключить</button></div>
+      <div id="live-connection-error" class="live-connection-error" hidden>Коэффициенты не загружаются. Причина указана выше.<button class="text-button" data-action="settings">Открыть настройки подключения</button></div>
+    </section>
+    <div class="notice" id="runtime-help" role="status">Если часы и кнопки не работают, этот файл открыт в режиме предпросмотра. Для живых коэффициентов нужен браузер, выполняющий JavaScript и сетевые запросы. Скачайте HTML и откройте его в Safari или Chrome.</div><div class="feed-line"><span class="status-pill" id="feed-status"><span class="dot"></span>НЕТ ДАННЫХ</span><span id="feed-description">Подключите API или загрузите историю</span><span class="feed-time" id="feed-time">—</span></div>
+    <div class="notice" id="mode-notice" hidden></div>
+    <div id="onboarding" class="onboarding"><div class="onboarding-glyph"><svg class="icon"><use href="#i-link"/></svg></div><div><h2>Начните с истории LuckyJet</h2><p>Подключение Crash Gateway из присланного кода уже встроено и запускается автоматически. Опрос каждые 2,5 секунды; сессию можно обновить в настройках.</p><div class="inline-actions"><button class="button primary" data-action="settings">Настроить API<svg class="icon"><use href="#i-arrow"/></svg></button><button class="button secondary" data-action="import">Загрузить историю</button><button class="text-button" data-action="demo">Посмотреть учебный пример</button></div></div></div>
+    <div class="metrics" id="metrics">
+      <article class="metric"><span>Последний коэффициент</span><div id="metric-latest">—<small>×</small></div><p id="metric-latest-sub">Ожидаем данные</p></article>
+      <article class="metric"><span>Средний коэффициент</span><div id="metric-avg">—<small>×</small></div><p id="metric-median">Медиана —</p></article>
+      <article class="metric"><span>Раунды от 2×</span><div id="metric-two">—<small>%</small></div><p id="metric-two-sub">По доступной истории</p></article>
+      <article class="metric gold"><span>Раунды от 10×</span><div id="metric-ten">—<small>%</small></div><p id="metric-max">Максимум —</p></article>
+    </div>
+    <div class="analysis-layout">
+      <article class="panel prediction-panel"><div class="panel-top"><span class="eyebrow"><svg class="icon"><use href="#i-zap"/></svg>ОБЫЧНЫЙ РАСЧЁТ · De</span><span class="tag" id="prediction-mode">ОЖИДАНИЕ</span></div><div class="prediction-body"><div><p class="card-label">Расчётный коэффициент</p><div class="target-number" id="target-coef">—<span>×</span></div><div class="pattern-tag" id="prediction-rule">Нужна история раундов</div></div><div class="score-block"><div class="score-ring" id="score-ring"><span id="score-value">—</span></div><small>БАЛЛ АЛГОРИТМА / 100</small></div></div><div class="window-row"><div><span>Расчётное окно</span><strong id="prediction-window">—</strong></div><div><span id="countdown-label">До начала</span><strong id="prediction-countdown">—</strong></div><button class="icon-button" data-tab="logic" aria-label="Как устроен расчёт"><svg class="icon"><use href="#i-code"/></svg></button></div><p class="basis" id="prediction-basis">Расчёт появится после загрузки минимум 20 раундов с точным временем.</p><div class="card-foot"><span class="tiny-dot"></span><span id="prediction-lock">Окно сохраняется до завершения</span><button class="text-button" data-action="recalculate">Пересчитать</button></div></article>
+      <article class="panel big-panel"><div class="panel-top"><span class="eyebrow gold-text"><svg class="icon"><use href="#i-zap"/></svg>БОЛЬШИЕ КОЭФФИЦИЕНТЫ · Ce</span></div><div class="big-target" id="big-target">100<span>×+</span></div><h2 id="big-heading">Ожидаем сочетание условий</h2><p id="big-basis">Медианные интервалы, MAD, скопления 20× / 50× и пуассоновская оценка.</p><div class="big-info"><div><span>Расчётное окно</span><strong id="big-window">—</strong></div><div><span>Балл / 100</span><strong id="big-score">—</strong></div></div><div class="big-note">Появляется только при выполнении исходных правил Ce.</div></article>
+    </div>
+    <article class="panel chart-panel"><div class="panel-top"><div><h2>Пульс коэффициентов</h2><p class="panel-subtitle">Последовательность последних раундов · логарифмическая шкала</p></div><label class="compact-select"><span class="sr-only">Количество раундов на графике</span><select id="chart-count"><option value="50">50 раундов</option><option value="100">100 раундов</option><option value="200">200 раундов</option></select></label></div><div class="chart-wrap" id="chart"><div class="empty-chart">График появится после загрузки истории</div></div><div class="chart-footer"><div class="legend"><span><i class="blue-bg"></i>менее 2×</span><span><i class="purple-bg"></i>2–10×</span><span><i class="gold-bg"></i>10×+</span><span><i class="pink-bg"></i>100×+</span></div><span id="chart-span">—</span></div></article>
+    <div class="lower-grid"><article class="panel"><div class="panel-top"><h2>Интервалы крупных раундов</h2><label class="compact-select"><span class="sr-only">Порог крупного коэффициента</span><select id="gap-threshold"><option value="10">от 10×</option><option value="20">от 20×</option><option value="50">от 50×</option><option value="100">от 100×</option></select></label></div><div class="gap-summary"><div><span>Медиана интервала</span><strong id="gap-median">—</strong></div><div><span>MAD интервалов</span><strong id="gap-mad">—</strong></div><div><span>После последнего</span><strong id="gap-age">—</strong></div></div><div class="table-scroll"><table><thead><tr><th>Время · <span data-zone>Киев</span></th><th>Коэффициент</th><th>Интервал</th><th>Раундов*</th></tr></thead><tbody id="gap-table"><tr><td colspan="4" class="empty-cell">История пока не загружена</td></tr></tbody></table></div><p class="table-note">* Количество записей между событиями в доступной истории; пропуски игрового потока не исключены.</p></article><article class="panel recent-panel"><div class="panel-top"><h2>Последние раунды</h2><button class="text-button" data-tab="history">Все<svg class="icon"><use href="#i-arrow"/></svg></button></div><div id="recent-rounds" class="round-grid"></div><div class="streak-row"><span>Серия ниже 2×</span><strong id="streak-value">—</strong></div><div class="streak-row"><span>Временных меток для расчёта</span><strong id="exact-value">0</strong></div><p class="quiet-note">Баллы правил описывают расчёт и не являются измеренной вероятностью выигрыша.</p></article></div>
+    <footer class="dashboard-footer"><span id="data-count">0 раундов в истории</span><span><span data-zone>Киев</span> · оригинальные формулы · без случайных прогнозов</span><button class="text-button" data-tab="sources">Источники и ограничения<svg class="icon"><use href="#i-arrow"/></svg></button></footer>
+  </section>
+  <section id="view-history" class="view" aria-labelledby="history-title"><div class="page-heading"><div><div class="eyebrow">ROUND ARCHIVE</div><h1 id="history-title">История раундов</h1><p>Фильтры, точное время и экспорт доступных записей.</p></div><div class="heading-actions"><button class="button secondary" data-action="export-json">JSON<svg class="icon"><use href="#i-download"/></svg></button><button class="button primary" data-action="export-csv">CSV<svg class="icon"><use href="#i-download"/></svg></button></div></div><div class="panel"><div class="filter-row"><label>Дата · <span data-zone>Киев</span><input type="date" id="history-date"></label><label>Минимум, ×<input type="number" min="1" step="0.01" value="1" id="history-min"></label><label class="search-field">Поиск по ID<input type="search" id="history-search" placeholder="Номер раунда"></label><button class="button secondary" data-action="reset-filters">Сбросить</button></div><div class="table-scroll"><table><thead><tr><th>Время · <span data-zone>Киев</span></th><th>Коэффициент</th><th>ID раунда</th><th>Время</th></tr></thead><tbody id="history-table"></tbody></table></div><div class="history-bottom"><span id="history-summary">0 записей</span><button class="button secondary" data-action="more-history" id="more-history">Показать ещё</button></div></div></section>
+  <section id="view-journal" class="view" aria-labelledby="journal-title"><div class="page-heading"><div><div class="eyebrow">WINDOW JOURNAL</div><h1 id="journal-title">Журнал окон</h1><p>Фиксация расчёта до события и проверка последующих раундов.</p></div><button class="button secondary" data-action="export-journal">Экспорт<svg class="icon"><use href="#i-download"/></svg></button></div><div class="notice">Окна записываются только при свежем потоке API. Импорт, учебный пример и старые раунды не создают попаданий. Отсутствие попадания при неполной истории остаётся неподтверждённым.</div><div class="journal-summary"><div class="panel"><span>Достигнута цель</span><strong id="journal-hit">0</strong></div><div class="panel"><span>Ожидают проверки</span><strong id="journal-pending">0</strong></div><div class="panel"><span>Не подтверждено</span><strong id="journal-unknown">0</strong></div></div><article class="panel"><div class="panel-top"><h2>Расчётные окна</h2><button class="text-button" data-action="clear-journal">Очистить журнал</button></div><div class="table-scroll"><table><thead><tr><th>Создано</th><th>Цель</th><th>Окно · <span data-zone>Киев</span></th><th>Проверка</th><th>Подтверждающий раунд</th></tr></thead><tbody id="journal-table"></tbody></table></div></article></section>
+  <section id="view-logic" class="view" aria-labelledby="logic-title"><div class="page-heading"><div><div class="eyebrow">ENGINE REFERENCE</div><h1 id="logic-title">Вся открытая логика</h1><p>Те же формулы и приоритеты правил в читаемой реализации.</p></div><span class="source-date">Проверено 24.10.2026</span></div><div class="notice">В этот HTML перенесены найденные браузерные расчёты. Закрытые серверные сборщики, платные ключи и исходники Telegram-бота не публиковались и сюда не входят.</div><div class="logic-columns"><article class="panel prose"><div class="panel-top"><h2>Обычный расчёт · De</h2><span class="tag">МИНИМУМ 20 РАУНДОВ</span></div><p>Правила проверяются по порядку. Выполняется первое подошедшее; большой расчёт Ce прикрепляется отдельно.</p><ol class="rule-list"><li><b>Цикл от 10×</b><span>Не менее 8 событий; MAD меньше 0,6 медианы интервала. Проверяется близость к расчётному времени. Цель — максимум последних 80 раундов, делённый на 2, 3 или 4; границы 2–20×.</span></li><li><b>15 подряд ниже 2×</b><span>Цель = геометрическое среднее × 2,5 + медиана; границы 2,5–15×. Начало через 90 секунд, окно 2 минуты.</span></li><li><b>Не менее 3 значений от 20× за 30 раундов</b><span>Геометрическое среднее крупных коэффициентов делится на 3, 4 или 5; цель ограничена 2–12×.</span></li><li><b>Не менее 3 значений 5–9,99× за 60 раундов</b><span>При доле значений ниже 2× больше 55% либо σ50 выше 1,4 среднего применяется множитель 0,45, иначе 0,7. Границы 2–4,5× либо 3–7×.</span></li><li><b>Общий расчёт</b><span>База = 0,5 × EMA20 + 0,3 × EMA50 + 0,2 × среднее 50. Далее применяются часовой множитель, максимум минуты +2 и поправка 1,6. При нестабильности цель ограничивается 3,2× либо 5×.</span></li></ol><p class="formula">EMA20: α = 0,25 · EMA50: α = 0,12</p><p>Часовые и минутные группы используют выбранный часовой пояс. Уже созданный расчёт сохраняется до конца окна и как минимум на минуту.</p></article><article class="panel prose"><div class="panel-top"><h2>Большие коэффициенты · Ce</h2><span class="tag gold-tag">100× / 120×</span></div><ol class="rule-list"><li><b>Медианный цикл от 100×</b><span>Не менее 5 событий. Разброс = 1,4826 × MAD, с ограничением 2–12 минут; проверяются устойчивость и положение относительно ожидаемого времени.</span></li><li><b>Скопление крупных значений</b><span>За последние 80 раундов не менее 6 результатов от 20× и не менее 3 от 50×. Цель 120×, начало через 3 минуты, окно 6 минут.</span></li><li><b>Пуассоновская оценка задержки</b><span>Не менее 4 событий от 100× и 80 раундов. λ = число событий / длительность истории. При 1 − exp(−λ × прошедшее время) ≥ 0,75 формируется кандидат на 100×.</span></li><li><b>Выбор кандидата</b><span>Берётся наибольший балл. Одиночный кандидат с баллом ниже 75 отбрасывается; при нескольких кандидатах добавляется 5, максимум 92.</span></li></ol><p class="formula">MAD = median(|x − median(x)|)</p><p>Пуассоновская величина здесь относится к прошедшему интервалу. Она не доказывает повышенную вероятность следующего независимого раунда.</p></article></div><article class="panel prose"><h2>Что означает балл и как проверяются окна</h2><p>Числа в исходном интерфейсе с обозначением «надёжности» вычисляются эвристическими правилами. В этой версии они подписаны как <b>балл алгоритма</b>: измеренной точности или обучения модели в опубликованном модуле нет.</p><p>Попадание подтверждается только точным раундом после создания записи и внутри её временного окна. Если подходящий раунд не найден, результат остаётся неподтверждённым: полнота игрового потока не доказана. Журнал локальный; закрытая вкладка не наблюдает новые события.</p><p>Для сравнения найденная формула BABEL: <code>min(среднее последних 3 × 1,10; 2,40)</code>. Она отображается отдельно и не меняет De / Ce. <strong id="babel-comparison">Нужны 3 раунда.</strong></p><details><summary>Показать исходник этой реализации</summary><pre id="engine-source"></pre></details></article></section>
+  <section id="view-sources" class="view" aria-labelledby="sources-title"><div class="page-heading"><div><div class="eyebrow">SOURCES & CONNECTION</div><h1 id="sources-title">Источники</h1><p>Происхождение формул, подключение данных и найденные проекты.</p></div><button class="button primary" data-action="settings">Подключить API<svg class="icon"><use href="#i-arrow"/></svg></button></div><article class="panel prose"><h2>Текущее подключение · наш Supabase</h2><p>Коэффициенты автоматически загружаются из нашей облачной истории LuckyJet. Подключение работает через сервер этой страницы; игровая сессия и ключ базы в браузер не передаются.</p><p>При запуске загружается до 2000 раундов, затем только новые записи. Объединение идёт по ID: одинаковые коэффициенты разных раундов сохраняются. В истории показывается время из базы по Киеву; оценочные метки исключаются из расчёта времени. Порядок поступления не означает подтверждённый игровой порядок.</p><p>Обычное окно и крупная цель проверяют текущую историю независимо. Для правила 120× нужны минимум 3 результата от 50× и 6 результатов от 20× среди последних 80 раундов: начало через 3 минуты, длительность 6 минут. Объявленное окно не сдвигается. Балл правил не является проверенной вероятностью попадания.</p></article><div class="logic-columns"><article class="panel prose"><h2>Оригинал: Historique LuckyJet</h2><p><a href="https://historique-luckyjet.shop/" target="_blank" rel="noopener noreferrer">historique-luckyjet.shop</a> · <a href="https://historique-luckyjet.lovable.app/" target="_blank" rel="noopener noreferrer">зеркало Lovable</a></p><p>Публичный модуль расчётов: <a href="https://historique-luckyjet.shop/assets/PredictionPanel-CBGsolff.js" target="_blank" rel="noopener noreferrer">PredictionPanel-CBGsolff.js</a>.</p><p class="hash">SHA-256: a7a322910c8658e41bfa82e932174eeff4419598c4d53b760c0df744b04ac08e</p><p>Самостоятельная реализация математических правил; оформление и интерфейс этой панели созданы отдельно. Копирования закрытого серверного кода нет.</p><p>Связанные страницы: <a href="https://historique-luckyjet.shop/historique" target="_blank" rel="noopener noreferrer">архив</a>, <a href="https://historique-luckyjet.shop/rocketqueen" target="_blank" rel="noopener noreferrer">Rocket Queen</a>, <a href="https://historique-luckyjet.shop/aviator" target="_blank" rel="noopener noreferrer">Aviator</a>, <a href="https://historique-luckyjet.shop/jetx" target="_blank" rel="noopener noreferrer">JetX</a>.</p></article><article class="panel prose"><h2>API оригинального сервиса</h2><pre>GET /api/public/v1/rounds?game=luckyjet&limit=500
+Authorization: Bearer ВАШ_КЛЮЧ</pre><p>Нужен действующий ключ сервиса. Без ключа при проверке получен ответ <code>401 missing_api_key</code>. В HTML ключ не вложен.</p><p>Поля: <code>round_id</code>, <code>coefficient</code>, <code>at</code>. Для этого дополнительного источника опрос настраивается;, история в этой панели — до 2000 записей. В ответе сервиса лимит 1–500.</p><p>Если браузер блокирует соединение из-за CORS, используйте импорт истории либо собственный разрешённый JSON endpoint. Общедоступные сторонние прокси не используются.</p></article></div><article class="panel prose"><h2>Другие найденные источники</h2><div class="table-scroll"><table><thead><tr><th>Проект</th><th>Что найдено</th></tr></thead><tbody><tr><td><a href="https://gamedata365.com/games/lucky_jet" target="_blank" rel="noopener noreferrer">GameData365</a></td><td>История и статистика; сервис заявляет запись реальных результатов. В эту панель его поток автоматически не подключён.</td></tr><tr><td><a href="https://luckyjettracker.com/" target="_blank" rel="noopener noreferrer">LuckyJetTracker</a> · <a href="https://github.com/rogervilla2024/luckyjet-tracker" target="_blank" rel="noopener noreferrer">GitHub</a></td><td>На сайте указана генерация раундов по модели RTP. Такая история не используется здесь как реальная.</td></tr><tr><td><a href="https://github.com/babelse/babelse.github.com/blob/main/lucky-jet.html" target="_blank" rel="noopener noreferrer">BABEL HTML</a></td><td>Простая формула среднего трёх значений с потолком 2,40×.</td></tr><tr><td><a href="https://github.com/davisclby73-sketch/LUCKYJET-AND-MINES/blob/main/src/utils/predictorEngine.ts" target="_blank" rel="noopener noreferrer">LUCKYJET-AND-MINES</a></td><td>Найдены случайный выбор цели, времени и «надёжности». Такой генератор не используется для сигналов этой панели.</td></tr></tbody></table></div></article><article class="panel prose"><h2>Работа с файлом</h2><p>Один HTML: стили, формулы и интерфейс встроены. Он не требует установки библиотек. Для live нужны интернет и доступная сессия Crash Gateway. Подключение запускается автоматически. Импортированные записи сохраняются локально, если браузер разрешает хранилище.</p><p>Импорт JSON: массив объектов или объект <code>{"rounds": [...]}</code>. CSV: заголовки <code>round_id,coefficient,at</code>. Время ISO 8601 с зоной, например <code>2026-10-24T06:30:00Z</code>. Время без зоны принимается как UTC. Записи без корректного времени не участвуют в расчёте.</p><p>Customer ID и Session ID из присланного кода встроены в этот HTML. Изменённая сессия хранится в памяти вкладки, пока вы не включили запоминание. Сессия отправляется только в Crash Gateway и не попадает в экспорт раундов или журнала.</p><button class="button secondary" data-action="export-example">Скачать пример формата JSON<svg class="icon"><use href="#i-download"/></svg></button></article></section>
+</main></div></div>
+<div class="modal-backdrop" id="settings-dialog" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="modal-header"><div><div class="eyebrow">CONNECTION</div><h2 id="settings-title">Подключение данных</h2></div><button class="icon-button" data-action="close-settings" aria-label="Закрыть"><svg class="icon"><use href="#i-close"/></svg></button></div><form id="settings-form"><label>Источник<select id="setting-source"><option value="supabase">Наш Supabase · LuckyJet</option><option value="original">Historique LuckyJet · API ключ</option><option value="custom">Мой JSON endpoint</option></select></label><label id="custom-url-label" hidden>Адрес JSON endpoint<input id="setting-url" type="url" placeholder="https://ваш-сервер/history" autocomplete="off"></label><div id="gateway-fields" hidden><label>Customer ID<input id="setting-customer" type="text" autocomplete="off" spellcheck="false"></label><label>Session ID<input id="setting-session" type="password" autocomplete="off" spellcheck="false" placeholder="Сессия из присланного кода"></label></div><label id="api-key-label">API ключ <span class="optional">не попадает в экспорт</span><input type="password" id="setting-key" placeholder="Введите ключ выбранного источника" autocomplete="off" spellcheck="false"></label><label class="check-label"><input type="checkbox" id="setting-remember">Запомнить изменённые данные на этом устройстве</label><div class="form-grid"><label>Опрос<select id="setting-interval"><option value="2500">2,5 секунды</option><option value="5000">5 секунд</option><option value="10000">10 секунд</option><option value="30000">30 секунд</option><option value="60000">60 секунд</option></select></label><label>Глубина анализа<select id="setting-depth"><option value="2000">До 2000 раундов</option><option value="500">500 раундов</option><option value="100">100 раундов</option><option value="50">50 раундов</option><option value="20">20 раундов</option></select></label></div><label>Часовой пояс расчёта<select id="setting-timezone"><option value="Europe/Kyiv">Киев · Europe/Kyiv</option><option value="UTC">UTC</option></select></label><p class="form-note" id="settings-note">Ключ отправляется только выбранному источнику. Получение данных не запускает ставки и не управляет игровым аккаунтом.</p><div class="form-error" id="settings-error" role="alert"></div><div class="modal-actions"><button class="button secondary" type="button" data-action="import">Импорт JSON / CSV</button><button class="button primary" type="submit">Сохранить и подключить<svg class="icon"><use href="#i-arrow"/></svg></button></div></form></section></div>
+<input id="import-file" type="file" accept=".json,.csv,.tsv,application/json,text/csv,text/tab-separated-values" hidden>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script id="analysis-core">/* LuckyJet Full Logic. Independent implementation of the public formulas inspected 2026-10-24.
+   Reference: historique-luckyjet.shop/assets/PredictionPanel-CBGsolff.js
+   No trained model, secret server code or random predictions are included. */
+(function (root) {
+  'use strict';
+  const MINUTE = 60000;
+  const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
+  const mean = values => values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+  function median(values) {
+    if (!values.length) return 0;
+    const sorted = [...values].sort((a, b) => a - b), middle = Math.floor(sorted.length / 2);
+    return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+  }
+  const sigma = values => {if (values.length < 2) return 0; const center = mean(values); return Math.sqrt(mean(values.map(v => (v - center) ** 2)));};
+  const mad = values => {if (values.length < 2) return 0; const center = median(values); return median(values.map(v => Math.abs(v - center)));};
+  const geometric = values => values.length ? Math.exp(mean(values.map(v => Math.log(Math.max(v, 1.001))))) : 0;
+  const maximum = values => values.length ? values.reduce((a, b) => b > a ? b : a, -Infinity) : 0;
+  function ema(values, alpha) {
+    if (!values.length) return 0;
+    let value = values[values.length - 1];
+    for (let i = values.length - 2; i >= 0; i--) value = alpha * values[i] + (1 - alpha) * value;
+    return value;
+  }
+  const clocks = new Map();
+  function clockParts(timestamp, timezone = 'Europe/Kyiv') {
+    if (!clocks.has(timezone)) {
+      let zone = timezone;
+      try {new Intl.DateTimeFormat('en', {timeZone: zone});} catch (error) {if (zone !== 'Europe/Kyiv') throw error; zone = 'Europe/Kiev';}
+      clocks.set(timezone, new Intl.DateTimeFormat('en-GB', {timeZone: zone, hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'}));
+    }
+    return Object.fromEntries(clocks.get(timezone).formatToParts(timestamp).filter(p => p.type !== 'literal').map(p => [p.type, Number(p.value)]));
+  }
+  function buckets(rounds, selector) {
+    const grouped = new Map();
+    for (const row of rounds) {
+      const key = selector(row), group = grouped.get(key) || {values: [], goldenCount: 0, megaCount: 0};
+      group.values.push(row.coefficient);
+      if (row.coefficient >= 10) group.goldenCount++;
+      if (row.coefficient >= 100) group.megaCount++;
+      grouped.set(key, group);
+    }
+    return new Map([...grouped].map(([key, group]) => [key, {count: group.values.length, goldenCount: group.goldenCount, megaCount: group.megaCount, avg: geometric(group.values), max: maximum(group.values)}]));
+  }
+  function gapStats(rounds, threshold) {
+    const events = rounds.filter(row => row.coefficient >= threshold).sort((a, b) => a.timestamp - b.timestamp);
+    const gaps = events.slice(1).map((row, i) => row.timestamp - events[i].timestamp);
+    return {avgGap: mean(gaps), medGap: median(gaps), stdGap: sigma(gaps), madGap: mad(gaps), last: events[events.length - 1]?.timestamp ?? null, count: events.length};
+  }
+  function bigOpportunity(rounds, now = Date.now()) {
+    const chronological = [...rounds].sort((a, b) => a.timestamp - b.timestamp), options = [];
+    const cycle = gapStats(chronological, 100);
+    if (cycle.count >= 5 && cycle.last && cycle.medGap > 0) {
+      const expected = cycle.last + cycle.medGap, offset = expected - now;
+      const spread = clamp(cycle.madGap * 1.4826 || cycle.medGap * .35, 2 * MINUTE, 12 * MINUTE);
+      const elapsed = now - cycle.last;
+      if (cycle.madGap > 0 && cycle.madGap < cycle.medGap * .5 && (Math.abs(offset) <= spread * .7 || elapsed >= cycle.medGap * .9)) {
+        const proximity = clamp(1 - Math.abs(offset) / Math.max(spread, 1), 0, 1);
+        const score = clamp(55 + Math.min(10, cycle.count) + proximity * 12, 55, 82);
+        options.push({expectedAt: offset > 0 ? expected : now + Math.max(2 * MINUTE, spread * .4), windowMs: clamp(spread, 3 * MINUTE, 10 * MINUTE), estimatedCoef: 100, confidence: Math.round(score), rule: 'big-cycle', reason: `Cycle 100x≈${(cycle.medGap / MINUTE).toFixed(1)}min — dernier il y a ${(elapsed / MINUTE).toFixed(1)}min (${cycle.count} évts)`});
+      }
+    }
+    const tail = chronological.slice(-80);
+    const count20 = tail.filter(row => row.coefficient >= 20).length, count50 = tail.filter(row => row.coefficient >= 50).length;
+    if (count50 >= 3 && count20 >= 6) {
+      options.push({expectedAt: now + 3 * MINUTE, windowMs: 6 * MINUTE, estimatedCoef: 120, confidence: Math.round(clamp(55 + count50 * 5 + count20, 55, 82)), rule: 'big-cluster', reason: `Cluster chaud : ${count20}×≥20x + ${count50}×≥50x sur 80 tours`});
+    }
+    const hundreds = chronological.filter(row => row.coefficient >= 100);
+    if (hundreds.length >= 4 && cycle.last && chronological.length >= 80) {
+      const elapsed = now - cycle.last, duration = chronological[chronological.length - 1].timestamp - chronological[0].timestamp;
+      const rate = duration > 0 ? hundreds.length / duration : 0;
+      if (rate > 0) {
+        const delayCdf = 1 - Math.exp(-rate * elapsed);
+        if (delayCdf >= .75) {
+          const wait = clamp(1 / rate, 90000, 8 * MINUTE);
+          options.push({expectedAt: now + wait, windowMs: clamp(wait * .8, 3 * MINUTE, 7 * MINUTE), estimatedCoef: 100, confidence: Math.round(clamp(50 + delayCdf * 30, 50, 80)), rule: 'big-poisson', reason: `Hazard Poisson : P(retard)=${(delayCdf * 100).toFixed(0)}% (λ⁻¹≈${(1 / rate / MINUTE).toFixed(1)}min)`});
+        }
+      }
+    }
+    if (!options.length) return null;
+    options.sort((a, b) => b.confidence - a.confidence);
+    const chosen = options[0];
+    if (options.length < 2 && chosen.confidence < 75) return null;
+    if (options.length >= 2) chosen.confidence = Math.min(92, chosen.confidence + 5);
+    return chosen;
+  }
+  function pinBigOpportunity(rounds, previous = null, now = Date.now()) {
+    if (previous && previous.generatedAt <= now && now < previous.expectedAt + previous.windowMs) return previous;
+    const candidate = bigOpportunity(rounds, now);
+    return candidate ? {...candidate, generatedAt: now} : null;
+  }
+  function predict(rounds, previous = null, now = Date.now(), timezone = 'Europe/Kyiv') {
+    if (rounds.length < 20) return null;
+    if (previous && now < Math.max(previous.estimatedAt + previous.windowMs, previous.generatedAt + MINUTE)) return previous;
+    const ordered = [...rounds].sort((a, b) => b.timestamp - a.timestamp), values = ordered.map(row => row.coefficient);
+    const med = median(values), geo = geometric(values), last20 = values.slice(0, 20), last50 = values.slice(0, 50);
+    const avg50 = mean(last50), ema20 = ema(last20, .25), ema50 = ema(last50, .12), deviation = sigma(last50), absolute = mad(last50);
+    const gold = gapStats(ordered, 10), elapsed = gold.last ? now - gold.last : Infinity;
+    const hours = buckets(ordered, row => clockParts(row.timestamp, timezone).hour), minutes = buckets(ordered, row => clockParts(row.timestamp, timezone).minute);
+    const clock = clockParts(now, timezone), hour = hours.get(clock.hour), minute = minutes.get((clock.minute + 2) % 60);
+    const low15 = values.slice(0, 15).length === 15 && values.slice(0, 15).every(value => value < 2);
+    const high30 = ordered.slice(0, 30).filter(row => row.coefficient >= 20), big = bigOpportunity(rounds, now);
+    const result = (target, score, expectedAt, windowMs, pattern, basis, rule, high = 82, middle = 66) => ({estimatedCoef: +target.toFixed(2), confidence: score >= high ? 'Élevé' : score >= middle ? 'Moyen' : 'Faible', reliability: score, estimatedAt: expectedAt, windowMs, pattern, basis, generatedAt: now, bigOpportunity: big, rule});
+    if (gold.medGap > 0 && gold.last) {
+      const offset = gold.last + gold.medGap - now, spread = clamp(gold.madGap * 1.4826 || gold.medGap * .55, MINUTE, 4 * MINUTE);
+      if (gold.count >= 8 && gold.madGap > 0 && gold.madGap < gold.medGap * .6 && Math.abs(offset) <= spread * .6) {
+        const divisor = high30.length >= 3 ? 2 : high30.length >= 1 ? 3 : 4;
+        const target = clamp(maximum(ordered.slice(0, 80).map(row => row.coefficient)) / divisor, 2, 20);
+        const base = clamp(60 - Math.abs(offset) / spread * 15, 40, 62), hourBonus = hour && hour.avg > geo ? 3 : 0;
+        const score = Math.round(clamp(base + hourBonus + clamp(gold.count / 20, 0, 4), 40, 68));
+        return result(target, score, offset > 0 ? now + Math.max(offset, 90000) : now + 2 * MINUTE, clamp(gold.medGap * .25, 90000, 3 * MINUTE), "Cycle des cotes d'or détecté", `Cycle médian ${(gold.medGap / MINUTE).toFixed(1)} min — dernier ${(elapsed / MINUTE).toFixed(1)} min — MAD ${(gold.madGap / MINUTE).toFixed(2)}min`, 'gold-cycle', Infinity, 66);
+      }
+    }
+    if (low15) {
+      const score = Math.round(clamp(70 + Math.min(15, (now - ordered[14].timestamp) / MINUTE), 65, 92));
+      return result(clamp(geo * 2.5 + med, 2.5, 15), score, now + 90000, 2 * MINUTE, 'Série basse — rebond statistique', `15 tours <2x — moy géo ${geo.toFixed(2)}x, médiane ${med.toFixed(2)}x`, 'low-streak', 82, -Infinity);
+    }
+    if (high30.length >= 3) {
+      const groupGeo = geometric(high30.map(row => row.coefficient)), divisor = high30.length >= 5 ? 3 : high30.length >= 4 ? 4 : 5;
+      return result(clamp(groupGeo / divisor, 2, 12), Math.min(78, 60 + high30.length * 3), now + 2 * MINUTE, 2.5 * MINUTE, `${high30.length} cotes ≥20x récentes`, `Moy. géo grosses cotes ${groupGeo.toFixed(2)}x ÷ ${divisor}`, 'high-cluster', 72, -Infinity);
+    }
+    const last60 = ordered.slice(0, 60), middleRounds = last60.filter(row => row.coefficient >= 5 && row.coefficient < 10);
+    const lowShare = last60.length ? last60.filter(row => row.coefficient < 2).length / last60.length : 0;
+    if (middleRounds.length >= 3) {
+      const groupGeo = geometric(middleRounds.map(row => row.coefficient)), fragile = lowShare > .55 || deviation > avg50 * 1.4;
+      const target = fragile ? clamp(groupGeo * .45, 2, 4.5) : clamp(groupGeo * .7, 3, 7);
+      const score = Math.round(clamp(64 + middleRounds.length * 4 + (fragile ? -6 : 6), 58, 90));
+      return result(target, score, now + 2 * MINUTE, 2.5 * MINUTE, fragile ? `Phase mixte — ${middleRounds.length} cotes 5x-9x sur base fragile` : `Phase favorable — ${middleRounds.length} cotes 5x-9x récentes`, `Zone 5x-9x géo ${groupGeo.toFixed(2)}x — <2x: ${(lowShare * 100).toFixed(0)}% — σ50 ${deviation.toFixed(2)}`, fragile ? 'mid-fragile' : 'mid-favorable', 82, 68);
+    }
+    const hourRatio = hour && hour.count >= 5 ? hour.avg / Math.max(geo, .1) : 1, minuteRatio = minute && minute.count >= 5 ? minute.avg / Math.max(geo, .1) : 1;
+    const weighted = ema20 * .5 + ema50 * .3 + avg50 * .2;
+    let target = clamp(weighted * hourRatio * .6 + (minute?.max ?? 0) * .1 + 1.6, 1.8, 12);
+    const fragile = lowShare > .6 || deviation > avg50 * 1.6;
+    if (fragile) target = Math.min(target, 3.2); else if (lowShare > .45) target = Math.min(target, 5);
+    const score = Math.round(clamp(52 + clamp(rounds.length / 25, 0, 28) + clamp(Math.abs(hourRatio - 1) * 42, 0, 22) + clamp(Math.abs(minuteRatio - 1) * 32, 0, 16) + (absolute > 0 && absolute < avg50 * .6 ? 5 : 0) + (fragile ? -8 : 0), 50, 92));
+    const delay = 2 * MINUTE + (60 - clock.second) * 1000 % 45000;
+    return result(target, score, now + delay, 2.5 * MINUTE, hourRatio > 1.1 ? 'Plage horaire favorable' : hourRatio < .9 ? 'Plage horaire faible' : 'Analyse multi-signaux', `EMA20 ${ema20.toFixed(2)}x — H${clock.hour}h: géo ${hour?.avg.toFixed(2) ?? '—'}x (${hour?.count ?? 0}) — MAD ${absolute.toFixed(2)} — σ ${deviation.toFixed(2)} — ${rounds.length} tours`, 'multi');
+  }
+  function timestamp(value) {
+    if (typeof value === 'number' || /^\d+(\.\d+)?$/.test(String(value))) { const n = Number(value); return n > 1e12 ? n : n * 1000; }
+    if (typeof value !== 'string') return NaN;
+    let text = value.trim();
+    if (/^\d{4}-\d\d-\d\d[ T]\d\d:\d\d(?::\d\d(?:\.\d+)?)?$/.test(text)) text = text.replace(' ', 'T') + 'Z';
+    return Date.parse(text);
+  }
+  function normalizeRows(payload, {requireId = false, allowUntimed = false} = {}) {
+    let array = Array.isArray(payload) ? payload : payload?.rounds ?? payload?.data?.rounds ?? payload?.data ?? payload?.items ?? payload?.history ?? payload?.results;
+    if (!Array.isArray(array)) throw Error('В JSON нужен массив rounds, data, history либо массив раундов.');
+    if (!array.length) throw Error('Источник вернул пустую историю.');
+    let skipped = 0;
+    const rows = [];
+    for (const raw of array) {
+      if (!raw || typeof raw !== 'object') { skipped++; continue; }
+      const number = raw.coefficient ?? raw.multiplier ?? raw.topCoefficient ?? raw.coef ?? raw.crash ?? raw.value ?? raw.finalValues?.[0];
+      const coefficient = Number(String(number).replace(/x$/i, '').replace(',', '.'));
+      const time = timestamp(raw.at ?? raw.round_timestamp ?? raw.played_at ?? raw.timestamp ?? raw.created_at ?? raw.finished_at ?? raw.createdAt ?? raw.startedAt ?? raw.finishedAt ?? raw.endedAt ?? raw.startTime ?? raw.endTime ?? raw.time ?? raw.date);
+      const originalId = raw.round_id ?? raw.id ?? raw.roundId ?? raw.gameId ?? raw.round ?? raw._id;
+      if (!Number.isFinite(coefficient) || coefficient < 1 || ((!Number.isFinite(time) || time <= 0) && !allowUntimed) || ((requireId || !Number.isFinite(time)) && originalId == null)) { skipped++; continue; }
+      const knownTime = Number.isFinite(time) && time > 0;
+      rows.push({id: String(originalId ?? `import:${time}:${coefficient}`), coefficient, timestamp: knownTime ? time : null, estimated: !knownTime || raw.estimated === true || raw.estimated === 'true', order: Number(raw.feed_order ?? raw.source_seq ?? raw.order ?? 0), timeKind: knownTime ? (raw.timeKind === 'observed' ? 'observed' : 'source') : 'unknown', observedSince: Number.isFinite(raw.observedSince) ? raw.observedSince : null, gateway: raw.gateway === true});
+    }
+    if (!rows.length) throw Error('Нет раундов с корректными коэффициентом и временем. Для анализа нужны оба поля.');
+    return {rows: mergeRows([], rows), skipped};
+  }
+  function mergeRows(existing, incoming, limit = 2000) {
+    const map = new Map(existing.map(row => [row.id, row]));
+    for (const row of incoming) {
+      const prior = map.get(row.id);
+      if (prior && prior.coefficient !== row.coefficient) throw Error(`Разные коэффициенты для одного ID ${row.id.slice(0, 40)}. Обновление остановлено.`);
+      map.set(row.id, row);
+    }
+    return [...map.values()].sort((a, b) => a.gateway && b.gateway ? b.order - a.order : (b.timestamp ?? 0) - (a.timestamp ?? 0) || b.order - a.order).slice(0, limit);
+  }
+  function normalizeGateway(payload, existing = [], now = Date.now(), previousPollAt = 0) {
+    const raw = Array.isArray(payload) ? payload : payload?.data ?? payload?.items ?? payload?.history ?? payload?.rounds;
+    if (!Array.isArray(raw)) throw Error('Gateway вернул неподдерживаемый формат истории.');
+    const completed = raw.filter(row => row && typeof row === 'object' && (!row.state || ['ending', 'ended', 'finished', 'completed', 'crashed'].includes(String(row.state).toLowerCase())));
+    const incoming = normalizeRows(completed, {requireId: true, allowUntimed: true});
+    const prior = new Map(existing.map(row => [row.id, row]));
+    const inputOrder = completed.map(row => String(row.round_id ?? row.id ?? row.roundId ?? row.gameId ?? row.round ?? row._id));
+    incoming.rows.sort((a, b) => inputOrder.indexOf(a.id) - inputOrder.indexOf(b.id));
+    const newcomers = incoming.rows.filter(row => !prior.has(row.id)).length;
+    let nextOrder = maximum(existing.map(row => row.order || 0)) + newcomers;
+    const oldHead = existing[0]?.id, changed = !!oldHead && incoming.rows[0]?.id !== oldHead;
+    const shortObservation = changed && previousPollAt > 0 && now > previousPollAt && now - previousPollAt <= 15000;
+    incoming.rows = incoming.rows.map((row, index) => {
+      const before = prior.get(row.id);
+      if (before && before.coefficient !== row.coefficient) throw Error('Gateway изменил коэффициент существующего ID. Обновление остановлено.');
+      const order = before?.order || nextOrder--;
+      if (!Number.isFinite(row.timestamp) && Number.isFinite(before?.timestamp)) return {...before, gateway: true, order};
+      if (!Number.isFinite(row.timestamp) && index === 0 && !before && shortObservation) return {...row, timestamp: now, estimated: true, timeKind: 'observed', observedSince: previousPollAt, gateway: true, order};
+      return {...row, gateway: true, order};
+    });
+    return incoming;
+  }
+  function csvRows(text) {
+    const first = text.replace(/^\uFEFF/, '').split(/\r?\n/)[0] || '', delimiter = first.includes(';') ? ';' : first.includes('\t') ? '\t' : ',';
+    const result = []; let row = [], cell = '', quoted = false;
+    const input = text.replace(/^\uFEFF/, '') + '\n';
+    for (let i = 0; i < input.length; i++) {
+      const char = input[i];
+      if (char === '"') { if (quoted && input[i + 1] === '"') { cell += '"'; i++; } else quoted = !quoted; }
+      else if (char === delimiter && !quoted) { row.push(cell); cell = ''; }
+      else if ((char === '\n' || char === '\r') && !quoted) { if (char === '\r' && input[i + 1] === '\n') i++; row.push(cell); if (row.some(v => v.trim())) result.push(row); row = []; cell = ''; }
+      else cell += char;
+    }
+    if (quoted) throw Error('Незакрытые кавычки в CSV.');
+    const headers = result.shift()?.map(value => value.trim().toLowerCase());
+    if (!headers?.length || !result.length) throw Error('CSV должен содержать заголовок и раунды.');
+    return result.map(values => Object.fromEntries(headers.map((header, i) => [header, values[i]?.trim() ?? ''])));
+  }
+  function evaluateEntry(entry, rows, now = Date.now()) {
+    if (entry.status === 'hit') return entry;
+    const hit = rows.filter(row => {
+      const boundedObservation = row.timeKind === 'observed' && Number.isFinite(row.observedSince) && row.observedSince > entry.createdAt && row.observedSince >= entry.start && row.timestamp - row.observedSince <= 15000;
+      return (!row.estimated || boundedObservation) && Number.isFinite(row.timestamp) && row.timestamp <= now && row.timestamp > entry.createdAt && row.timestamp >= entry.start && row.timestamp <= entry.end && row.coefficient >= entry.target;
+    }).sort((a, b) => a.timestamp - b.timestamp)[0];
+    if (hit) return {...entry, status: 'hit', roundId: hit.id, result: hit.coefficient, resultAt: hit.timestamp};
+    if (now > entry.end) return {...entry, status: 'unknown'};
+    return entry;
+  }
+  root.LuckyJetCore = Object.freeze({MINUTE, clamp, mean, median, sigma, mad, geometric, maximum, ema, clockParts, gapStats, buckets, predict, bigOpportunity, pinBigOpportunity, De: predict, Ce: bigOpportunity, timestamp, normalizeRows, normalizeGateway, mergeRows, csvRows, evaluateEntry});
+})(typeof window === 'undefined' ? globalThis : window);
+</script>
+<script id="application">(function () {
+  'use strict';
+  const runtimeHelp = document.getElementById('runtime-help');
+  window.addEventListener('error', event => {if (runtimeHelp) {runtimeHelp.hidden = false; runtimeHelp.textContent = 'HTML не смог завершить запуск JavaScript (' + (event.error?.name || 'ошибка') + '). Откройте файл в полноценном браузере. В предпросмотре ChatGPT или приложения «Файлы» сетевые запросы могут не выполняться.';}});
+  const C = window.LuckyJetCore;
+  const $ = id => document.getElementById(id);
+  const PREFIX = 'luckyjet-full-logic-v1:';
+  const CLOUD = {"url": "https://luckyjet-full-logic-v13-mpk.miuipro1993.chatgpt.site/api/rounds", "configured": true, "sourceId": "zulsrqkjkatzjjhacowy.supabase.co/luckyjet_classic_history"};
+  const DEFAULT = {source: 'supabase', url: '', interval: 2500, depth: 2000, timezone: 'Europe/Kyiv', remember: false, connectionVersion: 4};
+  const originalUrl = 'https://historique-luckyjet.shop/api/public/v1/rounds?game=luckyjet&limit=500';
+  function read(key, fallback) {try {return JSON.parse(localStorage.getItem(PREFIX + key)) ?? fallback;} catch {return fallback;}}
+  function save(key, value) {try {localStorage.setItem(PREFIX + key, JSON.stringify(value)); return true;} catch {return false;}}
+  const storedConfig = read('settings', {});
+  const config = {...DEFAULT, ...storedConfig};
+  if (storedConfig.connectionVersion !== 4) {config.source = 'supabase'; config.interval = 2500; config.connectionVersion = 4; save('settings', config);}
+  if (!['supabase', 'original', 'custom'].includes(config.source)) config.source = 'supabase';
+  if (![2500, 5000, 10000, 30000, 60000].includes(config.interval)) config.interval = 2500;
+  if (![20, 50, 100, 500, 2000].includes(config.depth)) config.depth = 2000;
+  if (!['Europe/Kyiv', 'UTC'].includes(config.timezone)) config.timezone = 'Europe/Kyiv';
+  function supportedZone(zone) {try {new Intl.DateTimeFormat('en', {timeZone: zone}); return zone;} catch {return zone === 'Europe/Kyiv' ? 'Europe/Kiev' : 'UTC';}}
+  let key = config.remember ? read('api-key', '') : '';
+  const cached = read('cache', null);
+  const state = {rows: [], mode: 'none', sourceName: '', namespace: '', prediction: null, bigPrediction: null, running: false, inflight: false, timer: null, controller: null, generation: 0, failures: 0, lastSuccess: 0, feedCursor: null, error: '', skipped: 0, historyLimit: 100, journal: read('journal', []), wasFresh: false, renderedTab: 'dashboard'};
+  if (!Array.isArray(state.journal)) state.journal = [];
+  state.journal = state.journal.filter(x => x && Number.isFinite(x.start) && Number.isFinite(x.end) && Number.isFinite(x.createdAt) && Number.isFinite(x.target)).slice(0, 200).map(x => x.status === 'pending' && Date.now() > x.end ? {...x, status: 'unknown'} : x);
+  if (cached?.rows?.length) {try {state.rows = C.normalizeRows(cached.rows, {allowUntimed: true}).rows; state.mode = 'archive'; state.sourceName = cached.sourceName || 'Сохранённая история'; state.namespace = cached.namespace || 'import:cache';} catch {}}
+  const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]));
+  const number = (value, digits = 2) => Number.isFinite(value) ? value.toFixed(digits) : '—';
+  const icon = name => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+  const colorClass = value => value >= 100 ? 'pink' : value >= 10 ? 'gold' : value >= 2 ? 'purple' : 'blue';
+  const coefficient = value => `<span class="coef-pill ${colorClass(value)}">${number(value)}×</span>`;
+  function formatTime(value, {date = false, seconds = false} = {}) {
+    if (!Number.isFinite(value)) return '—';
+    return new Intl.DateTimeFormat('ru-RU', {timeZone: supportedZone(config.timezone), ...(date ? {day: '2-digit', month: '2-digit'} : {}), hour: '2-digit', minute: '2-digit', ...(seconds ? {second: '2-digit'} : {})}).format(value);
+  }
+  const dayKey = value => Number.isFinite(value) ? new Intl.DateTimeFormat('sv-SE', {timeZone: supportedZone(config.timezone), year: 'numeric', month: '2-digit', day: '2-digit'}).format(value) : '';
+  const rangeText = (start, end) => `${formatTime(start)} — ${formatTime(end)}${dayKey(start) !== dayKey(end) ? ' · ' + formatTime(end, {date: true}) : ''}`;
+  function duration(ms) {if (!Number.isFinite(ms) || ms < 0) return '—'; if (ms < 60000) return Math.floor(ms / 1000) + ' с'; if (ms < 3600000) return (ms / 60000).toFixed(1) + ' мин'; return (ms / 3600000).toFixed(1) + ' ч';}
+  function exactRows() {return state.rows.filter(row => Number.isFinite(row.timestamp) && (!row.estimated || row.timeKind === 'observed') && row.timestamp <= Date.now()).slice(0, config.depth);}
+  function fresh() {
+    const now = Date.now(), last = state.rows[0];
+    return state.running && state.mode === 'live' && !state.error && !!last && Number.isFinite(last.timestamp) && now - state.lastSuccess < Math.max(30000, config.interval * 2 + 5000) && now - last.timestamp < 180000 && last.timestamp <= now + 10000;
+  }
+  function toast(message, error = false) {const el = $('toast'); el.textContent = message; el.classList.toggle('error', error); el.hidden = false; clearTimeout(toast.timer); toast.timer = setTimeout(() => {el.hidden = true;}, 5500);}
+  function namespace() {let hash = 2166136261; for (const char of (config.source === 'supabase' ? CLOUD?.sourceId || 'luckyjet' : config.url)) {hash ^= char.charCodeAt(0); hash = Math.imul(hash, 16777619);} return config.source === 'supabase' ? 'api:supabase:' + (hash >>> 0).toString(16) : config.source === 'original' ? 'api:historique-luckyjet' : 'api:custom:' + (hash >>> 0).toString(16);}
+  function persistRows() {if (state.mode === 'demo') return; save('cache', {rows: state.rows, sourceName: state.sourceName, namespace: state.namespace, savedAt: Date.now()});}
+  const ruleNames = {'gold-cycle': 'Цикл коэффициентов от 10×', 'low-streak': 'Серия 15 раундов ниже 2×', 'high-cluster': 'Скопление коэффициентов от 20×', 'mid-fragile': 'Зона 5–9× · нестабильная база', 'mid-favorable': 'Зона 5–9× · благоприятная база', multi: 'Совместный анализ признаков', 'big-cycle': 'Медианный цикл 100×', 'big-cluster': 'Скопление 20× и 50×', 'big-poisson': 'Пуассоновская оценка интервала'};
+  function translate(text) {return String(text ?? '').replaceAll('Cycle médian', 'Медианный интервал').replaceAll('Cycle 100x≈', 'Цикл 100× ≈ ').replaceAll('dernier il y a', 'после последнего').replaceAll('dernier', 'после последнего').replaceAll('évts', 'событий').replaceAll('Cluster chaud :', 'Скопление:').replaceAll('sur 80 tours', 'за 80 раундов').replaceAll('Hazard Poisson : P(retard)=', 'Оценка задержки: F(t)=').replaceAll('moy géo', 'геом. среднее').replaceAll('Moy. géo grosses cotes', 'Геом. среднее крупных').replaceAll('médiane', 'медиана').replaceAll('tours', 'раундов').replaceAll('min', ' мин').replaceAll('Zone 5x-9x géo', 'Зона 5–9×, геом. среднее').replaceAll('géo', 'геом. среднее').replaceAll('15 раундов <2x', '15 раундов <2×');}
+  function calculate() {
+    const rows = exactRows();
+    if (rows.length < 20) {state.prediction = null; state.bigPrediction = null; return;}
+    const live = fresh();
+    const now = live ? Date.now() : rows[0].timestamp;
+    const previous = live && state.prediction?.generatedAt <= now ? state.prediction : null;
+    if (state.running && !live) return;
+    state.bigPrediction = C.pinBigOpportunity(rows, live ? state.bigPrediction : null, now);
+    const prediction = {...C.predict(rows, previous, now, config.timezone), bigOpportunity: state.bigPrediction};
+    state.prediction = prediction;
+    if (live && prediction) {
+      const entries = [{kind: 'normal', target: prediction.estimatedCoef, start: prediction.estimatedAt, end: prediction.estimatedAt + prediction.windowMs, createdAt: prediction.generatedAt, score: prediction.reliability, rule: prediction.rule}];
+      if (prediction.bigOpportunity) {const big = prediction.bigOpportunity; entries.push({kind: 'big', target: big.estimatedCoef, start: big.expectedAt, end: big.expectedAt + big.windowMs, createdAt: big.generatedAt, score: big.confidence, rule: big.rule});}
+      for (const entry of entries) {
+        const id = `${state.namespace}:${entry.kind}:${entry.createdAt}`;
+        if (entry.start >= entry.createdAt && !state.journal.some(item => item.id === id)) state.journal.unshift({...entry, id, namespace: state.namespace, status: 'pending'});
+      }
+      state.journal = state.journal.slice(0, 200);
+      evaluateJournal();
+    }
+  }
+  function evaluateJournal() {
+    if (!fresh()) return;
+    state.journal = state.journal.map(entry => entry.namespace === state.namespace ? C.evaluateEntry(entry, state.rows) : entry);
+    save('journal', state.journal);
+  }
+  function renderStatus() {
+    renderLiveCoefficients();
+    const live = fresh(), last = state.rows[0], kind = state.error ? 'error' : live ? 'live' : state.rows.length ? 'archive' : '';
+    const title = state.error ? 'НЕТ СВЯЗИ' : live ? 'LIVE · API' : state.mode === 'collecting' ? 'API · СБОР ВРЕМЕНИ' : state.mode === 'demo' ? 'УЧЕБНЫЙ ПРИМЕР' : state.rows.length ? 'АРХИВ' : state.inflight ? 'ПОДКЛЮЧЕНИЕ' : 'НЕТ ДАННЫХ';
+    $('feed-status').className = 'status-pill ' + kind;
+    $('feed-status').innerHTML = '<span class="dot"></span>' + title;
+    $('side-dot').className = 'dot ' + kind;
+    $('side-status').textContent = live || state.mode === 'collecting' ? 'Поток подключён' : state.error ? 'Соединение прервано' : state.rows.length ? 'Разбор истории' : 'Данные не подключены';
+    $('side-source').textContent = state.sourceName || 'API · JSON · CSV';
+    $('feed-description').textContent = state.error || (live ? `${state.sourceName} · опрос ${config.interval / 1000} с` : state.mode === 'demo' ? 'Условные данные для проверки интерфейса' : last ? `${state.sourceName || 'История'} · последняя запись ${formatTime(last.timestamp, {date: true, seconds: true})}` : 'Подключите API или загрузите историю');
+    $('feed-time').textContent = state.lastSuccess ? 'Обновлено ' + formatTime(state.lastSuccess, {seconds: true}) : 'Часовой пояс: ' + (config.timezone === 'UTC' ? 'UTC' : 'Киев');
+    $('run-button').innerHTML = icon(state.running ? 'pause' : 'play') + `<span>${state.running ? 'Остановить' : 'Подключить API'}</span>`;
+    $('onboarding').hidden = state.rows.length > 0;
+    const notice = $('mode-notice');
+    if (state.mode === 'demo') {notice.hidden = false; notice.textContent = 'Учебный пример. Коэффициенты и временные метки условные; это не игровой поток. Окна не записываются в журнал результатов.';}
+    else if (state.rows.length && !live) {notice.hidden = false; notice.textContent = state.running ? 'Свежесть потока пока не подтверждена. История остаётся на экране; новые live-окна не создаются.' : 'Архивный расчёт по состоянию на последнюю запись. Это разбор загруженной истории, а не действующий сигнал на текущее время.';}
+    else {notice.hidden = true; notice.textContent = '';}
+    if (state.skipped) {notice.hidden = false; notice.textContent += ` Пропущено некорректных записей: ${state.skipped}.`;}
+    if (config.source === 'supabase' && state.running && !state.error && state.rows.some(row => row.estimated)) {notice.hidden = false; notice.textContent = 'Часть временных меток в базе оценочная. Эти раунды видны в истории, но исключены из расчёта времени окна.';}
+  }
+  function renderLiveCoefficients() {
+    const rows = state.rows.slice(0, 20), last = rows[0];
+    const connected = fresh();
+    const status = $('live-coefficients-status');
+    status.textContent = state.error ? 'НЕТ СВЯЗИ' : state.mode === 'demo' ? 'УЧЕБНЫЙ ПРИМЕР' : connected ? 'API ПОДКЛЮЧЁН' : state.inflight ? 'ЗАПРОС API' : rows.length ? 'СОХРАНЁННАЯ ИСТОРИЯ' : 'НЕТ ДАННЫХ';
+    status.className = 'status-pill ' + (state.error ? 'error' : connected ? 'live' : rows.length ? 'archive' : '');
+    $('live-coefficient-value').textContent = last ? number(last.coefficient) + '×' : '—';
+    $('live-coefficient-value').className = 'live-coefficient-value ' + (last ? colorClass(last.coefficient) : '');
+    $('live-coefficient-caption').textContent = last ? state.mode === 'demo' ? 'Условный раунд · пример' : 'Последний полученный раунд' : 'Коэффициенты ещё не загружены';
+    $('live-coefficients-list').innerHTML = rows.map((row, index) => `<span class="live-coefficient-chip ${colorClass(row.coefficient)}${index === 0 ? ' latest' : ''}" title="Раунд ${escape(row.id)}">${number(row.coefficient)}×</span>`).join('') || '<span class="live-feed-empty">Здесь появятся последние 20 коэффициентов</span>';
+    $('live-connection-message').textContent = state.error ? state.error : connected ? `Получено ${state.rows.length} раундов · обновлено ${formatTime(state.lastSuccess, {seconds: true})} · опрос ${config.interval / 1000} с` : state.inflight ? 'Запрашиваем коэффициенты. Ждать 20 новых раундов для этой ленты не нужно.' : rows.length ? 'Поток остановлен. Нажмите «Переподключить», чтобы получать новые раунды.' : 'Нажмите «Переподключить». Коэффициенты появятся сразу после ответа API.';
+    $('live-connection-error').hidden = !state.error;
+  }
+  function renderMetrics() {
+    const rows = state.rows, values = rows.map(row => row.coefficient), n = rows.length;
+    const setMetric = (id, value, suffix) => {$(id).innerHTML = escape(value) + '<small>' + suffix + '</small>';};
+    setMetric('metric-latest', n ? number(values[0]) : '—', '×');
+    $('metric-latest-sub').textContent = n ? formatTime(rows[0].timestamp, {seconds: true}) + ' · ' + (state.mode === 'demo' ? 'пример' : rows[0].timeKind === 'observed' ? 'получен в браузере' : Number.isFinite(rows[0].timestamp) ? 'завершённый раунд' : 'время API не передано') : 'Ожидаем данные';
+    setMetric('metric-avg', n ? number(C.mean(values)) : '—', '×');
+    $('metric-median').textContent = 'Медиана ' + (n ? number(C.median(values)) + '×' : '—');
+    const twos = values.filter(v => v >= 2).length, tens = values.filter(v => v >= 10).length;
+    setMetric('metric-two', n ? (twos / n * 100).toFixed(1) : '—', '%');
+    setMetric('metric-ten', n ? (tens / n * 100).toFixed(1) : '—', '%');
+    $('metric-two-sub').textContent = n ? `${twos} из ${n} записей` : 'По доступной истории';
+    $('metric-max').textContent = 'Максимум ' + (n ? number(C.maximum(values)) + '×' : '—');
+    $('data-count').textContent = n.toLocaleString('ru-RU') + ' раундов в истории';
+    $('nav-count').textContent = n;
+    let streak = 0; for (const value of values) {if (value >= 2) break; streak++;}
+    $('streak-value').textContent = n ? streak : '—';
+    $('exact-value').textContent = exactRows().length;
+    $('recent-rounds').innerHTML = rows.slice(0, 20).map(row => `<div class="round-card ${colorClass(row.coefficient)}" title="${escape(row.id)}"><b>${number(row.coefficient)}×</b><small>${formatTime(row.timestamp, {seconds: true})}</small></div>`).join('') || '<p class="quiet-note">Здесь будут последние коэффициенты.</p>';
+    const babel = values.length >= 3 ? Math.min(C.mean(values.slice(0, 3)) * 1.10, 2.4).toFixed(2) + '×' : null;
+    $('babel-comparison').textContent = babel ? 'На текущей истории: ' + babel + ' (сравнительная формула).' : 'Нужны 3 раунда.';
+  }
+  function renderPrediction() {
+    const p = state.prediction, live = fresh();
+    $('target-coef').innerHTML = (p ? number(p.estimatedCoef) : '—') + '<span>×</span>';
+    $('score-value').textContent = p ? p.reliability : '—';
+    $('score-ring').style.setProperty('--score', (p ? p.reliability * 3.6 : 0) + 'deg');
+    $('prediction-rule').textContent = p ? ruleNames[p.rule] || 'Расчёт по исходным правилам' : `Нужно 20 раундов со временем · ${exactRows().length}/20`;
+    $('prediction-mode').textContent = p ? live ? 'АКТИВНОЕ ОКНО' : state.mode === 'demo' ? 'ПРИМЕР' : 'АРХИВНЫЙ РАСЧЁТ' : 'ОЖИДАНИЕ';
+    $('prediction-mode').className = 'tag' + (p && live ? ' live' : '');
+    $('prediction-window').textContent = p ? rangeText(p.estimatedAt, p.estimatedAt + p.windowMs) : '—';
+    $('prediction-basis').textContent = p ? translate(p.basis) : 'Расчёт появится после загрузки или наблюдения минимум 20 раундов с временными метками.';
+    $('prediction-lock').textContent = p ? `${exactRows().length} ${state.mode === 'demo' ? 'учебных' : 'учтённых'} раундов · балл правил, не вероятность` : 'Окно сохраняется до завершения';
+    const big = p?.bigOpportunity;
+    $('big-target').innerHTML = big ? number(big.estimatedCoef, 0) + '<span>×</span>' : '100<span>×+</span>';
+    $('big-heading').textContent = big ? ruleNames[big.rule] || 'Условия Ce выполнены' : 'Ожидаем сочетание условий';
+    $('big-basis').textContent = big ? translate(big.reason) : 'Медианные интервалы, MAD, скопления 20× / 50× и пуассоновская оценка.';
+    $('big-window').textContent = big ? rangeText(big.expectedAt, big.expectedAt + big.windowMs) : '—';
+    $('big-score').textContent = big ? big.confidence : '—';
+    renderCountdown();
+  }
+  function renderCountdown() {
+    const p = state.prediction;
+    if (!p) {$('prediction-countdown').textContent = '—'; return;}
+    if (!fresh()) {$('countdown-label').textContent = 'Режим'; $('prediction-countdown').textContent = state.mode === 'demo' ? 'Учебный' : 'История'; return;}
+    const now = Date.now(), before = now < p.estimatedAt, remaining = (before ? p.estimatedAt : p.estimatedAt + p.windowMs) - now;
+    $('countdown-label').textContent = before ? 'До начала' : 'До конца';
+    const seconds = Math.max(0, Math.ceil(remaining / 1000));
+    $('prediction-countdown').textContent = `${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
+  }
+  function renderChart() {
+    const rows = state.rows.slice(0, Number($('chart-count').value)).reverse();
+    if (!rows.length) {$('chart').innerHTML = '<div class="empty-chart">График появится после загрузки истории</div>'; $('chart-span').textContent = '—'; return;}
+    const width = 1000, height = 182, top = 7, bottom = 154, left = 29, right = 8;
+    const topValue = Math.max(10, C.maximum(rows.map(row => row.coefficient))), logMax = Math.log10(topValue) + .05;
+    const y = value => bottom - Math.log10(Math.max(1, value)) / logMax * (bottom - top);
+    const step = (width - left - right) / rows.length, barWidth = Math.max(1, step - Math.min(3, step * .2));
+    const colors = {blue: '#5c9bce', purple: '#9474c6', gold: '#cfaa6c', pink: '#d28caf'};
+    let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="График последних ${rows.length} коэффициентов" preserveAspectRatio="none">`;
+    for (const line of [1, 2, 10, 100, 1000, 10000]) {if (line > topValue * 1.1) continue; const position = y(line); svg += `<line x1="${left}" y1="${position}" x2="${width - right}" y2="${position}" stroke="#242a39" stroke-dasharray="3 5"/><text x="1" y="${position + 3}" fill="#646f87" font-size="8">${line}×</text>`;}
+    rows.forEach((row, i) => {const position = y(row.coefficient); svg += `<rect x="${(left + i * step).toFixed(2)}" y="${position.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${Math.max(2, bottom - position).toFixed(2)}" rx="1.6" fill="${colors[colorClass(row.coefficient)]}"><title>${number(row.coefficient)}× · ${formatTime(row.timestamp, {seconds: true})} · ${escape(row.id)}</title></rect>`;});
+    svg += `<text x="${left}" y="178" fill="#687289" font-size="8">${formatTime(rows[0].timestamp)}</text><text x="${width - right}" y="178" fill="#687289" font-size="8" text-anchor="end">${formatTime(rows[rows.length - 1].timestamp)}</text></svg>`;
+    $('chart').innerHTML = svg;
+    $('chart-span').textContent = `${rows.length} раундов · ${Number.isFinite(rows[0].timestamp) && Number.isFinite(rows[rows.length - 1].timestamp) ? duration(rows[rows.length - 1].timestamp - rows[0].timestamp) : 'время части раундов отсутствует'}`;
+  }
+  function renderGaps() {
+    const threshold = Number($('gap-threshold').value), rows = [...exactRows()].reverse(), gap = C.gapStats(rows, threshold);
+    $('gap-median').textContent = gap.count >= 2 ? duration(gap.medGap) : '—';
+    $('gap-mad').textContent = gap.count >= 3 ? duration(gap.madGap) : '—';
+    $('gap-age').textContent = gap.last ? duration((fresh() ? Date.now() : rows[rows.length - 1]?.timestamp ?? Date.now()) - gap.last) : '—';
+    const events = rows.map((row, index) => ({...row, index})).filter(row => row.coefficient >= threshold);
+    $('gap-table').innerHTML = events.map((row, i) => ({...row, gap: i ? row.timestamp - events[i - 1].timestamp : null, between: i ? row.index - events[i - 1].index - 1 : null})).reverse().slice(0, 6).map(row => `<tr><td>${formatTime(row.timestamp, {seconds: true})}</td><td>${coefficient(row.coefficient)}</td><td>${row.gap == null ? '—' : duration(row.gap)}</td><td>${row.between ?? '—'}</td></tr>`).join('') || '<tr><td colspan="4" class="empty-cell">Событий по выбранному порогу пока нет</td></tr>';
+  }
+  function filteredRows() {const date = $('history-date').value, min = Math.max(1, Number($('history-min').value) || 1), search = $('history-search').value.trim().toLowerCase(); return state.rows.filter(row => row.coefficient >= min && (!date || dayKey(row.timestamp) === date) && (!search || row.id.toLowerCase().includes(search)));}
+  function renderHistory() {
+    const rows = filteredRows(), visible = rows.slice(0, state.historyLimit);
+    $('history-table').innerHTML = visible.map(row => `<tr><td>${formatTime(row.timestamp, {date: true, seconds: true})}</td><td>${coefficient(row.coefficient)}</td><td title="${escape(row.id)}">${escape(row.id.length > 48 ? row.id.slice(0, 45) + '…' : row.id)}</td><td>${state.mode === 'demo' ? 'Учебное' : !Number.isFinite(row.timestamp) ? 'Не передано API' : row.timeKind === 'observed' ? 'Время появления' : row.estimated ? '<span class="result-unknown">Приблизительное</span>' : 'Время источника'}</td></tr>`).join('') || '<tr><td colspan="4" class="empty-cell">Записей по выбранным фильтрам нет</td></tr>';
+    $('history-summary').textContent = `Показано ${visible.length} из ${rows.length} · всего ${state.rows.length}`;
+    $('more-history').hidden = visible.length >= rows.length;
+  }
+  function renderJournal() {
+    for (const type of ['hit', 'pending', 'unknown']) $('journal-' + type).textContent = state.journal.filter(entry => entry.status === type).length;
+    $('journal-table').innerHTML = state.journal.map(entry => `<tr><td>${formatTime(entry.createdAt, {date: true, seconds: true})}<small style="display:block;color:#69748a">${entry.kind === 'big' ? 'Ce · большое окно' : 'De · обычное окно'}</small></td><td>${coefficient(entry.target)}</td><td>${rangeText(entry.start, entry.end)}</td><td class="result-${escape(entry.status)}">${entry.status === 'hit' ? '✓ Цель достигнута' : entry.status === 'unknown' ? 'Не подтверждено' : 'Ожидает проверки'}</td><td>${entry.status === 'hit' ? number(entry.result) + '× · ' + formatTime(entry.resultAt, {seconds: true}) + '<small style="display:block;color:#657188">' + escape(entry.roundId) + '</small>' : '—'}</td></tr>`).join('') || '<tr><td colspan="5" class="empty-cell">Пока нет окон, созданных при свежем потоке API</td></tr>';
+  }
+  function render() {document.querySelectorAll('[data-zone]').forEach(node => {node.textContent = config.timezone === 'UTC' ? 'UTC' : 'Киев';}); renderStatus(); renderMetrics(); renderPrediction(); renderChart(); renderGaps(); renderHistory(); renderJournal();}
+  function tab(name) {if (!['dashboard', 'history', 'journal', 'logic', 'sources'].includes(name)) name = 'dashboard'; state.renderedTab = name; document.querySelectorAll('.view').forEach(view => {view.classList.toggle('active', view.id === 'view-' + name);}); document.querySelectorAll('.nav-item[data-tab]').forEach(button => {button.classList.toggle('active', button.dataset.tab === name);}); try {if (location.hash !== '#' + name && !['about:', 'data:', 'file:'].includes(location.protocol)) history.replaceState(null, '', '#' + name);} catch {} try {window.scrollTo({top: 0, behavior: 'auto'});} catch {}}
+  async function requestData() {
+    if (!state.running || state.inflight) return;
+    state.inflight = true; const controller = new AbortController(); state.controller = controller;
+    const generation = state.generation;
+    const timeout = setTimeout(() => controller.abort(), 12000);
+    renderStatus();
+    try {
+      const cloudQuery = new URLSearchParams({limit: String(config.depth)});
+      if (config.source === 'supabase' && state.feedCursor != null) cloudQuery.set('after', String(state.feedCursor));
+      const url = config.source === 'supabase' ? CLOUD.url + '?' + cloudQuery : config.source === 'original' ? originalUrl : config.url;
+      const headers = {Accept: 'application/json'};
+      if (config.source !== 'supabase' && key) headers.Authorization = 'Bearer ' + key;
+      const response = await fetch(url, {method: 'GET', headers, signal: controller.signal, credentials: config.source === 'supabase' ? 'same-origin' : 'omit', referrerPolicy: 'no-referrer', cache: 'no-store'});
+      if (!response.ok) {const messages = {400: 'Источник отклонил параметры запроса (400).', 401: 'Нужна авторизация или действующий ключ выбранного источника (401).', 403: 'Источник отказал в доступе (403).', 429: 'Превышен лимит API (429). Частота запросов временно снижена.', 502: 'Supabase временно не ответил. Повторим запрос автоматически.', 503: 'Подключение Supabase ещё не настроено на сервере.'}; throw Error(messages[response.status] || 'Ошибка API: HTTP ' + response.status);}
+      const payload = await response.json();
+      const now = Date.now();
+      const emptyDelta = config.source === 'supabase' && state.feedCursor != null && Array.isArray(payload.rounds) && payload.rounds.length === 0;
+      const normalized = emptyDelta ? {rows: [], skipped: 0} : C.normalizeRows(payload, {requireId: true});
+      if (generation !== state.generation || !state.running) return;
+      if (Number.isFinite(normalized.rows[0]?.timestamp) && normalized.rows[0].timestamp > now + 10000) throw Error('Время источника опережает часы устройства. Проверьте дату и время.');
+      state.rows = C.mergeRows(state.rows, normalized.rows);
+      state.skipped = normalized.skipped; state.lastSuccess = now; state.failures = 0; state.error = '';
+      if (config.source === 'supabase') {
+        const orders = normalized.rows.map(row => row.order).filter(order => Number.isSafeInteger(order) && order > 0);
+        if (orders.length) state.feedCursor = Math.max(state.feedCursor ?? 0, ...orders);
+      }
+      const demo = payload.demo === true || ['example', 'demo', 'simulation'].includes(payload.mode);
+      state.mode = demo ? 'demo' : !Number.isFinite(state.rows[0].timestamp) ? 'collecting' : now - state.rows[0].timestamp < 180000 ? 'live' : 'archive';
+      if (demo) {state.prediction = null; state.running = false;}
+      if (state.mode === 'archive') state.error = 'Последний раунд старше 3 минут. Показываем архив.';
+      calculate(); evaluateJournal(); persistRows(); render();
+    } catch (error) {
+      if (generation !== state.generation || !state.running) return;
+      state.failures++;
+      state.error = error?.name === 'AbortError' ? 'Источник не ответил за 12 секунд. Повторим запрос.' : error instanceof TypeError ? 'Браузер не смог прочитать API. Проверьте сеть и CORS; доступен импорт JSON / CSV.' : error.message || 'Не удалось прочитать API.';
+      render();
+    } finally {
+      clearTimeout(timeout);
+      if (generation === state.generation) {state.inflight = false; state.controller = null; if (state.running) {const delay = state.failures ? Math.min(60000, config.interval * 2 ** Math.min(state.failures, 4)) : config.interval; state.timer = setTimeout(requestData, delay);} renderStatus();}
+    }
+  }
+  function stop({quiet = false} = {}) {state.running = false; state.generation++; clearTimeout(state.timer); state.controller?.abort(); state.controller = null; state.inflight = false; state.error = ''; if (state.mode === 'live') state.mode = 'archive'; if (!quiet) {state.prediction = null; state.bigPrediction = null; calculate(); render();}}
+  function start() {
+    if (config.source === 'supabase' && !CLOUD?.configured) {state.error = 'Подключение Supabase ещё не настроено на сервере.'; render(); return;}
+    if (config.source === 'original' && !key) {openSettings(); $('settings-error').textContent = 'Для API оригинального сервиса нужен ваш ключ. Можно также импортировать историю.'; $('setting-key').focus(); return;}
+    if (config.source === 'custom' && !config.url) {openSettings(); $('settings-error').textContent = 'Укажите адрес вашего JSON endpoint.'; return;}
+    stop({quiet: true});
+    const nextNamespace = namespace();
+    if (state.namespace !== nextNamespace) {state.rows = []; state.prediction = null; state.bigPrediction = null; state.skipped = 0;}
+    state.namespace = nextNamespace; state.sourceName = config.source === 'supabase' ? 'Наш Supabase · LuckyJet' : config.source === 'original' ? 'Historique LuckyJet' : 'Мой JSON endpoint';
+    state.mode = state.rows.length ? 'archive' : 'none'; state.running = true; state.failures = 0; state.error = ''; state.lastSuccess = 0; state.feedCursor = null;
+    render(); requestData();
+  }
+  let lastFocus;
+  function sourceFields() {$('custom-url-label').hidden = $('setting-source').value !== 'custom'; $('gateway-fields').hidden = true; $('api-key-label').hidden = $('setting-source').value === 'supabase'; $('settings-note').textContent = $('setting-source').value === 'supabase' ? 'Наш поток подключён автоматически через сервер. Вводить игровую сессию или ключ Supabase здесь не нужно.' : 'API ключ отправляется только выбранному источнику и не попадает в экспорт истории.';}
+  function openSettings() {lastFocus = document.activeElement; $('setting-source').value = config.source; $('setting-url').value = config.url; $('setting-key').value = key; $('setting-remember').checked = !!config.remember; $('setting-interval').value = config.interval; $('setting-depth').value = config.depth; $('setting-timezone').value = config.timezone; $('settings-error').textContent = ''; sourceFields(); $('settings-dialog').hidden = false; document.body.style.overflow = 'hidden'; $('setting-source').focus();}
+  function closeSettings() {$('settings-dialog').hidden = true; document.body.style.overflow = ''; lastFocus?.focus();}
+  $('setting-source').addEventListener('change', () => {sourceFields(); $('setting-key').value = ''; $('setting-remember').checked = false;});
+  $('settings-form').addEventListener('submit', event => {
+    event.preventDefault();
+    const source = $('setting-source').value, customUrl = $('setting-url').value.trim(), newKey = $('setting-key').value.trim();
+    if (source === 'custom') {try {const parsed = new URL(customUrl); if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(parsed.hostname))) throw Error();} catch {$('settings-error').textContent = 'Нужен HTTPS-адрес JSON endpoint.'; return;}}
+    if (source === 'original' && !newKey) {$('settings-error').textContent = 'Введите API ключ либо выберите импорт истории.'; return;}
+    stop({quiet: true});
+    Object.assign(config, {source, url: source === 'custom' ? customUrl : '', interval: Number($('setting-interval').value), depth: Number($('setting-depth').value), timezone: $('setting-timezone').value, remember: $('setting-remember').checked});
+    save('settings', config);
+    key = source === 'supabase' ? '' : newKey; if (config.remember && key) save('api-key', key); else {try {localStorage.removeItem(PREFIX + 'api-key');} catch {}}
+    state.prediction = null; state.bigPrediction = null; closeSettings(); start();
+  });
+  function download(filename, content, type = 'application/json') {const blob = new Blob([content], {type: type + ';charset=utf-8'}), url = URL.createObjectURL(blob), link = document.createElement('a'); link.href = url; link.download = filename; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1500);}
+  function exportRows(type) {
+    const rows = state.renderedTab === 'history' ? filteredRows() : state.rows;
+    if (!rows.length) {toast('Сначала загрузите историю.', true); return;}
+    if (type === 'json') {download('LuckyJet_history.json', JSON.stringify({format: 'LuckyJet Full Logic v1.1', exportedAt: new Date().toISOString(), mode: state.mode === 'demo' ? 'example' : 'archive', demo: state.mode === 'demo', timezone: config.timezone, rounds: rows.map(row => ({round_id: row.id, coefficient: row.coefficient, at: Number.isFinite(row.timestamp) ? new Date(row.timestamp).toISOString() : null, estimated: row.estimated, timeKind: row.timeKind, observedSince: row.observedSince})), calculation: state.prediction}, null, 2));}
+    else {const cell = value => {let text = String(value); if (/^[=+\-@]/.test(text)) text = "'" + text; return '"' + text.replaceAll('"', '""') + '"';}; const csv = ['round_id,coefficient,at,estimated', ...rows.map(row => [row.id, row.coefficient, Number.isFinite(row.timestamp) ? new Date(row.timestamp).toISOString() : '', row.estimated].map(cell).join(','))].join('\r\n'); download(state.mode === 'demo' ? 'LuckyJet_DEMO_history.csv' : 'LuckyJet_history.csv', '\uFEFF' + csv, 'text/csv');}
+  }
+  const exampleValues = [1.14, 1.52, 1.42, 1.76, 2.96, 1.16, 1.05, 8.67, 2.30, 1.07, 3.57, 1.31, 5.54, 1.15, 1.54, 1.99, 2.67, 1.71, 13.00, 2.70, 3.20, 1.05, 3.07, 9.60, 1.48, 1.86, 1.00, 1.00, 1.07, 1.00, 1.08, 1.18, 1.47, 1.98, 1.35, 48.36, 7.34, 1.06, 1.62, 1.55, 1.01, 1.35, 1.05, 1.00, 1.39, 1.00, 23.76, 1.93, 2.75, 1.03];
+  function examplePayload() {const at = Math.floor(Date.now() / 60000) * 60000; return {mode: 'example', demo: true, note: 'Учебные значения и условные временные метки. Не игровой поток.', rounds: exampleValues.map((coefficient, index) => ({round_id: 'DEMO-' + String(50 - index).padStart(3, '0'), coefficient, at: new Date(at - index * 21000).toISOString()}))};}
+  function loadExample() {stop({quiet: true}); state.rows = C.normalizeRows(examplePayload()).rows; state.mode = 'demo'; state.namespace = 'demo'; state.sourceName = 'Учебный пример'; state.prediction = null; state.lastSuccess = 0; state.skipped = 0; calculate(); render(); tab('dashboard'); toast('Учебный пример открыт. Эти расчёты не записываются в журнал.');}
+  $('import-file').addEventListener('change', async event => {
+    const file = event.target.files?.[0]; if (!file) return;
+    try {
+      if (file.size > 10 * 1024 * 1024) throw Error('Файл слишком большой. Максимум 10 МБ.');
+      const text = await file.text(), payload = file.name.toLowerCase().endsWith('.json') || /^\s*[\[{]/.test(text) ? JSON.parse(text) : C.csvRows(text);
+      const result = C.normalizeRows(payload);
+      stop({quiet: true}); state.rows = result.rows; state.mode = payload.demo || payload.mode === 'example' || /DEMO/i.test(file.name) ? 'demo' : 'archive'; state.namespace = 'import:' + Date.now(); state.sourceName = file.name; state.prediction = null; state.lastSuccess = 0; state.skipped = result.skipped;
+      calculate(); persistRows(); closeSettings(); render(); tab('dashboard'); toast(`Загружено ${state.rows.length} раундов${result.skipped ? ', пропущено ' + result.skipped : ''}.`);
+    } catch (error) {toast(error.message || 'Не удалось прочитать файл.', true);} finally {event.target.value = '';}
+  });
+  document.addEventListener('click', event => {
+    const button = event.target.closest('[data-action],[data-tab]'); if (!button) return;
+    if (button.dataset.tab) {tab(button.dataset.tab); return;}
+    const action = button.dataset.action;
+    if (action === 'settings') openSettings();
+    else if (action === 'close-settings') closeSettings();
+    else if (action === 'toggle-run') state.running ? stop() : start();
+    else if (action === 'reconnect') start();
+    else if (action === 'import') $('import-file').click();
+    else if (action === 'demo') loadExample();
+    else if (action === 'export-json') exportRows('json');
+    else if (action === 'export-csv') exportRows('csv');
+    else if (action === 'export-example') download('LuckyJet_DEMO_format_example.json', JSON.stringify(examplePayload(), null, 2));
+    else if (action === 'export-journal') download('LuckyJet_window_journal.json', JSON.stringify({format: 'LuckyJet Full Logic journal v1', exportedAt: new Date().toISOString(), windows: state.journal}, null, 2));
+    else if (action === 'more-history') {state.historyLimit += 100; renderHistory();}
+    else if (action === 'reset-filters') {$('history-date').value = ''; $('history-min').value = '1'; $('history-search').value = ''; state.historyLimit = 100; renderHistory();}
+    else if (action === 'clear-journal') {state.journal = []; save('journal', state.journal); renderJournal(); toast('Локальный журнал очищен.');}
+    else if (action === 'recalculate') {const previous = state.prediction; calculate(); renderPrediction(); if (!state.prediction) toast('Нужны минимум 20 точных раундов.', true); else toast(previous === state.prediction && fresh() ? 'Текущее окно сохраняется до завершения, как в оригинале.' : 'Расчёт обновлён по текущей истории.');}
+  });
+  $('settings-dialog').addEventListener('click', event => {if (event.target === $('settings-dialog')) closeSettings();});
+  document.addEventListener('keydown', event => {
+    if ($('settings-dialog').hidden) return;
+    if (event.key === 'Escape') {closeSettings(); return;}
+    if (event.key === 'Tab') {const focusable = [...$('settings-dialog').querySelectorAll('button,input,select')].filter(el => !el.disabled && el.getClientRects().length), first = focusable[0], last = focusable[focusable.length - 1]; if (event.shiftKey && document.activeElement === first) {event.preventDefault(); last.focus();} else if (!event.shiftKey && document.activeElement === last) {event.preventDefault(); first.focus();}}
+  });
+  for (const id of ['history-date', 'history-min', 'history-search']) $(id).addEventListener('input', () => {state.historyLimit = 100; renderHistory();});
+  $('chart-count').addEventListener('change', renderChart); $('gap-threshold').addEventListener('change', renderGaps);
+  window.addEventListener('hashchange', () => tab(location.hash.slice(1)));
+  window.addEventListener('online', () => {if (state.running && !state.inflight) {clearTimeout(state.timer); requestData();}});
+  document.addEventListener('visibilitychange', () => {if (!document.hidden && state.running && !state.inflight) {clearTimeout(state.timer); requestData();}});
+  window.addEventListener('beforeunload', () => {state.controller?.abort(); persistRows(); save('journal', state.journal);});
+  $('engine-source').textContent = $('analysis-core').textContent;
+  calculate(); render(); tab(location.hash.slice(1) || 'dashboard');
+  function tick() {$('kyiv-clock').textContent = new Intl.DateTimeFormat('ru-RU', {timeZone: supportedZone('Europe/Kyiv'), hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'}).format(Date.now()); renderCountdown(); const active = fresh(); if (active !== state.wasFresh) {state.wasFresh = active; renderStatus(); renderPrediction();}}
+  tick(); setInterval(tick, 1000);
+  setInterval(() => {if (fresh()) {calculate(); evaluateJournal(); renderPrediction(); renderGaps(); renderJournal();}}, 8000);
+  if (config.source === 'supabase') start();
+  if (runtimeHelp) runtimeHelp.hidden = true;
+})();
+</script>
+</body></html>

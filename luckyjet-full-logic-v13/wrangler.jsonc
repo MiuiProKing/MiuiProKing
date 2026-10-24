@@ -1,0 +1,5 @@
+{
+  "name": "luckyjet-full-logic-v13",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-24"
+}

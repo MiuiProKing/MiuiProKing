@@ -1,0 +1,8 @@
+{
+  "name": "luckyjet-full-logic-v13",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  }
+}
