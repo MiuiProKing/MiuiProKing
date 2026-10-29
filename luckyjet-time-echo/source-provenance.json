@@ -1,0 +1,16 @@
+{
+  "source": "https://god-preditor-luckyjet-orb.miuipro1993.chatgpt.site/",
+  "version": 15,
+  "files": {
+    "index.html": "b9fff3cc524768c622a085cc0c32f48feca8d55e7b2b750ded3207f8787f1a0b",
+    "style.css": "fe32e11964fe1ab2c8bbad29c3aae5643785806a70351b8993b7f4728674a52b",
+    "loader.js": "adb84d5edbb1ad6addb9e21c21c6a39bbc99fa9e6ecf256e69ad2f780816146c",
+    "app.js": "70637c867ca9ceb8c85f9ff0a85409989facbf87219f47912e232900e5015aee",
+    "api.js": "1e299977fb0bba4acedfd4ff9196a1a840a583d26d626c58ced2ce9369f44dd5",
+    "archive.js": "c14a4da6ab5b709433833e4baa549fc60f9a9f10928e09e907d4c10c464a51db",
+    "cache.js": "3a2e313b2258f1bda8e5eac54f589bf9bb820d32a2ce438ce8534ae67c797977",
+    "config.js": "e9850f6cb0ecb729948c1a5c9ba7e2d6e45be4f03cace4255cf656de77756240",
+    "model.js": "8ccd3a033ab2938975ffcc87595b581bd09bb8a9a6d1e3f584b2422153faad68",
+    "orb.js": "8931846a5983caccf74c9b48f1f004a53b00a6d6258c0431fac684054f3f3c89"
+  }
+}

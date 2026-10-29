@@ -1,0 +1,27 @@
+{
+  "checked_at": "2026-10-29T23:55:38.232Z",
+  "archive_complete": true,
+  "round_count": 137790,
+  "minimum_timestamp": "2026-09-24T19:22:14.872Z",
+  "largest_coefficient": 48696.82,
+  "large_count": 12850,
+  "upcoming_count": 15,
+  "backtest": {
+    "hour": {
+      "hit": 2145,
+      "miss": 718,
+      "unknown": 5686,
+      "baseHit": 2130,
+      "baseMiss": 709,
+      "baseUnknown": 5710
+    },
+    "day": {
+      "hit": 1775,
+      "miss": 279,
+      "unknown": 6383,
+      "baseHit": 1841,
+      "baseMiss": 266,
+      "baseUnknown": 6330
+    }
+  }
+}
