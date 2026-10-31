@@ -1,0 +1,46 @@
+{
+  "archiveSha256": "4a8e5c056510b2fed8d1b655a8826e7e9a651cc4f54cf960ef50c4096b5ad809",
+  "sourceFiles": [
+    {
+      "file": "historique-public-audit/AiPredictionPanel-B3Hc_8UW.js",
+      "sha256": "7582df4a607941b3bad619960793d6604cb02eb3d4a06b3e03e2fc92a9fd9e9d"
+    },
+    {
+      "file": "historique-public-audit/analysis-data-BaiXRb_2.js",
+      "sha256": "3a524f5e39696c4547acb80feeceefb3835c7c78a1be33da7bbd802075802acf"
+    },
+    {
+      "file": "historique-public-audit/index-C5ThNCN-.js",
+      "sha256": "082d0f402b70bced048ffde3cd432bf52e0b49f353306889e216488cf0902a62"
+    },
+    {
+      "file": "historique-public-audit/manifest.json",
+      "sha256": "c2f585ac8f0c987db425723439e291764e4a836818fece83e96cd77d1bba8089"
+    },
+    {
+      "file": "historique-public-audit/PredictionPanel-BwmEfDz4.js",
+      "sha256": "3a59b174662027bbf8b6c7941a3e0933befd9c825ac118f7b71eb0530628dcbd"
+    },
+    {
+      "file": "historique-public-audit/premium._game-yGdvscKg.js",
+      "sha256": "127838b063315f3c0616c6f324834fc59733e4881cf07ded61b16ee0beca81f7"
+    },
+    {
+      "file": "historique-public-audit/PremiumAccess-e9rUD6rd.js",
+      "sha256": "8ef132c756fe233cf4cdcf92fdf1f28d5be21c5811178b95384ca66d4602698c"
+    },
+    {
+      "file": "historique-public-audit/REPORT.ru.md",
+      "sha256": "1ffd18f5561f3adc89a650157e0ff7ca52a20dc8dc47ac7ae500ef7c04b544cf"
+    },
+    {
+      "file": "historique-public-audit/unauthenticated-vip-check.json",
+      "sha256": "a2d5e68ff54c2efd5191cbee46c7001bf4ddd3c4c1868b8c749e98cc45da4819"
+    },
+    {
+      "file": "historique-public-audit/vortex-scene-BPgrQS3F.js",
+      "sha256": "1819ee509e0af2e303ff50a7b66ee90a67a7e4ee2ff358bbd391d73c03cda28a"
+    }
+  ],
+  "extraction": "Basic forecast, trajectory, validation and WebGL copied from supplied archive; only imports/exports adapted. React layout replaced by standalone Russian UI. Private server implementations absent."
+}

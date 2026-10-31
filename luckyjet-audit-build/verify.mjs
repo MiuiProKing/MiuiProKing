@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {bestInWindow,resolveWindow,advanceState,initialState} from './extracted/signal-validation.mjs';
+import {forecastBasic} from './extracted/basic-forecast.mjs';
+import {spiderPose} from './extracted/trajectory.mjs';
+const start=1000000,end=start+180000;
+assert.equal(bestInWindow([{timestamp:start+30000,coefficient:50},{timestamp:start+120000,coefficient:201}],200,start,180000).reached,true);
+assert.equal(bestInWindow([{timestamp:end+1,coefficient:900}],200,start,180000).reached,false);
+assert.equal(resolveWindow({target:200,start,end},[{id:'a',timestamp:start+30000,coefficient:201}],start+40000,30).status,'validated');
+assert.equal(resolveWindow({target:200,start,end},[{timestamp:start+30000,coefficient:20}],end+10000,30),null);
+const rounds=Array.from({length:9},(_,i)=>({id:String(i),timestamp:start-30000+i*30000,coefficient:2}));
+assert.equal(resolveWindow({target:200,start,end},rounds,end+30000,30).status,'failed');
+assert.deepEqual(spiderPose(2,1440,960),spiderPose(22,1440,960));
+assert.equal(forecastBasic([],null,Date.now()),null);
+assert.equal(advanceState(initialState(),[],start,false,30,[]).windows.length,0);
+console.log('8 checks passed.');
