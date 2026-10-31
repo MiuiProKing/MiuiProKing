@@ -1,0 +1,120 @@
+{
+  "checkedAt": "2026-10-31T03:57:02.411Z",
+  "status": {
+    "error": "",
+    "fresh": true,
+    "source": "Supabase cloud collector",
+    "checked_at": "2026-10-31T03:57:02.327043+00:00",
+    "pc_required": false,
+    "last_round_at": "2026-10-31T03:56:58.335467+00:00",
+    "source_connected": true,
+    "game_order_verified": false
+  },
+  "complete": true,
+  "rounds": 142728,
+  "conflicts": 0,
+  "latest": [
+    {
+      "id": "86d57422-7600-4c0a-8771-a8310bd53c63",
+      "coefficient": 1.24,
+      "order": 1000000230964,
+      "timestamp": 1793419018267,
+      "estimated": false
+    },
+    {
+      "id": "42c0a8b5-a262-478f-a31f-60e329c4d9ed",
+      "coefficient": 2.85,
+      "order": 1000000230962,
+      "timestamp": 1793419006343,
+      "estimated": false
+    },
+    {
+      "id": "47f8d02a-c757-401a-9060-27d8a4e2b30d",
+      "coefficient": 6.42,
+      "order": 1000000230961,
+      "timestamp": 1793418985029,
+      "estimated": false
+    },
+    {
+      "id": "bba2dce6-d72f-42ea-a65b-ddb23b07f17d",
+      "coefficient": 3.31,
+      "order": 1000000230959,
+      "timestamp": 1793418954724,
+      "estimated": false
+    },
+    {
+      "id": "05811aff-9220-4b21-b9dc-b1029b7b83fd",
+      "coefficient": 2.64,
+      "order": 1000000230958,
+      "timestamp": 1793418931502,
+      "estimated": false
+    }
+  ],
+  "stats": [
+    {
+      "threshold": 40,
+      "count": 238,
+      "sampleSize": 10000,
+      "frequencyPct": 2.38,
+      "medianGapMs": 642013,
+      "lastId": "36e49a13-1e32-4ade-b829-29bc90120b7b",
+      "lastAt": 1793418811875,
+      "estimatedNextAt": 1793419453888,
+      "overdue": false
+    },
+    {
+      "threshold": 200,
+      "count": 37,
+      "sampleSize": 10000,
+      "frequencyPct": 0.37,
+      "medianGapMs": 5082238,
+      "lastId": "8ff1a685-8203-4773-aa46-1b3ac92aa89f",
+      "lastAt": 1793416205120,
+      "estimatedNextAt": 1793421287358,
+      "overdue": false
+    },
+    {
+      "threshold": 500,
+      "count": 15,
+      "sampleSize": 10000,
+      "frequencyPct": 0.15,
+      "medianGapMs": 8909500.5,
+      "lastId": "a4c3605a-6ffa-472e-be0b-ea71cca07a9a",
+      "lastAt": 1793408398937,
+      "estimatedNextAt": null,
+      "overdue": true
+    }
+  ],
+  "windows": [
+    {
+      "id": "basic:1793419022000",
+      "kind": "basic",
+      "target": 20,
+      "start": 1793419142000,
+      "end": 1793419232000,
+      "createdAt": 1793419022000,
+      "status": "pending",
+      "heuristicScore": 60,
+      "pattern": "Cycle des cotes d'or détecté",
+      "basis": "Cycle médian 2.8 min — dernier 3.5 min — MAD 1.67min"
+    },
+    {
+      "id": "median:40:36e49a13-1e32-4ade-b829-29bc90120b7b",
+      "kind": "median:40",
+      "target": 40,
+      "start": 1793419453888,
+      "end": 1793419633888,
+      "createdAt": 1793419022000,
+      "status": "pending"
+    },
+    {
+      "id": "median:200:8ff1a685-8203-4773-aa46-1b3ac92aa89f",
+      "kind": "median:200",
+      "target": 200,
+      "start": 1793421287358,
+      "end": 1793421467358,
+      "createdAt": 1793419022000,
+      "status": "pending"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0a0618"><title>GOD PREDITOR · LuckyJet Analysis</title><link rel="stylesheet" href="./assets/original.css"><link rel="stylesheet" href="./live.css"></head>
+<body><main class="live-app">
+<div class="glow glow-top" aria-hidden="true"></div><div class="glow glow-bottom" aria-hidden="true"></div>
+<header><div><h1>GOD <span>PREDITOR</span></h1><p>LUCKYJET · ANALYSIS LIVE</p></div><button id="openHistory" aria-haspopup="dialog">◷ История</button></header>
+<div class="connection"><i id="connectionDot"></i><span id="connectionText" role="status">Подключаем нашу Supabase…</span></div>
+<section class="feed" id="feed" aria-label="Последние пять коэффициентов"></section>
+<section class="scene" aria-label="Анимация и расчёт"><canvas id="vortex" aria-hidden="true"></canvas><div class="fallback" id="fallback" hidden aria-hidden="true"></div><div class="readout" id="readout"><small id="phase">ЗАГРУЖАЕМ ИСТОРИЮ</small><strong id="target">—</strong><time id="windowTime">—</time><span id="windowDetail">Ожидаем реальные раунды</span><p id="result" aria-live="polite"></p></div></section>
+<section class="threshold-panel"><div class="panel-head"><h2>Крупные коэффициенты</h2><span id="sampleSize">—</span></div><div class="threshold-grid" id="thresholds"></div><p class="note">Ориентиры 40× / 200× / 500× рассчитаны по медианным интервалам нашей истории. Это наша статистическая модель, не отсутствующий в архиве VIP-сервер.</p></section>
+<section class="basic-panel"><h2>Базовый алгоритм из архива</h2><p id="basicDetail">Подготовка данных…</p><p class="note">Баллы алгоритма не являются измеренным процентом попаданий. Исторические интервалы не определяют следующий краш.</p></section>
+<footer><span id="archiveProgress">Архив ещё загружается</span><button id="animationToggle" aria-pressed="true">Анимация: вкл.</button></footer>
+</main>
+<dialog id="historyDialog" aria-labelledby="historyTitle"><div class="drawer-head"><h2 id="historyTitle">История</h2><button id="closeHistory" aria-label="Закрыть историю">×</button></div><nav><button id="roundsTab" aria-pressed="true">Коэффициенты</button><button id="signalsTab" aria-pressed="false">Результаты окон</button></nav><p id="historyNote" class="note"></p><div class="drawer-scroll"><div id="historyList"></div><button id="moreHistory">Показать ещё 100</button></div></dialog>
+<noscript><p>Для загрузки коэффициентов включите JavaScript.</p></noscript><script type="module" src="./app.js"></script></body></html>

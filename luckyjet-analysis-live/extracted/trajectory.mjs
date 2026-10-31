@@ -1,0 +1,39 @@
+// Exact public trajectory function, isolated from application dependencies.
+function re(n, o, i) {
+  const u = Math.min(o * 0.34, 240),
+    l = Math.max(76, u * 0.56) / 38,
+    c = [
+      { at: 0, x: -0.37, y: 0.36, z: 300 },
+      { at: 1.3, x: -0.08, y: 0.27, z: 270 },
+      { at: 3.1, x: 0.22, y: 0.12, z: 270 },
+      { at: 4.2, x: 0.02, y: 0.12, z: -55 },
+      { at: 5.5, x: -0.25, y: -0.24, z: 280 },
+      { at: 6.7, x: 0.08, y: -0.34, z: 280 },
+      { at: 8.1, x: -0.65, y: -0.46, z: 280 },
+      { at: 19, x: -0.65, y: 0.42, z: 300 },
+      { at: 20, x: -0.37, y: 0.36, z: 300 },
+    ],
+    a = n % 20,
+    s = Math.max(
+      0,
+      c.findIndex((m, w) => w < c.length - 1 && a < (c[w + 1]?.at ?? 20)),
+    ),
+    t = c[s] ?? c[0],
+    r = c[s + 1] ?? t,
+    d = c[Math.max(0, s - 1)] ?? t,
+    f = c[Math.min(c.length - 1, s + 2)] ?? r,
+    g = (a - t.at) / (r.at - t.at),
+    b = (m) => {
+      if (s === 6) return t[m] + (r[m] - t[m]) * g;
+      const w = (r[m] - d[m]) * 0.35,
+        h = (f[m] - t[m]) * 0.35;
+      return (
+        (2 * g ** 3 - 3 * g ** 2 + 1) * t[m] +
+        (g ** 3 - 2 * g ** 2 + g) * w +
+        (-2 * g ** 3 + 3 * g ** 2) * r[m] +
+        (g ** 3 - g ** 2) * h
+      );
+    };
+  return { x: b("x") * o, y: b("y") * i, z: b("z"), size: l };
+}
+export { re as spiderPose };
