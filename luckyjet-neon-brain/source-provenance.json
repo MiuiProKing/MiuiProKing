@@ -1,0 +1,7 @@
+{
+  "archive_sha256": "4a8e5c056510b2fed8d1b655a8826e7e9a651cc4f54cf960ef50c4096b5ad809",
+  "logic": "extracted/basic-forecast.mjs retained; low-target adapter in engine.js",
+  "electric": "https://github.com/tuberboy/weird-monster",
+  "brain": "Original SVG/canvas neural anatomy renderer; reference researched: https://github.com/Laniman/threejs-brain-animation (not copied)",
+  "spider": "Original Canvas IK courier using real feed chips"
+}
