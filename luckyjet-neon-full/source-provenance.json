@@ -1,0 +1,9 @@
+{
+  "archive_sha256": "4a8e5c056510b2fed8d1b655a8826e7e9a651cc4f54cf960ef50c4096b5ad809",
+  "logic": "User source/prediction.ts -> prediction.js (type stripping only); full target adapter engine.js",
+  "electric": "https://github.com/tuberboy/weird-monster",
+  "brain": "Original SVG/canvas neural anatomy renderer; reference researched: https://github.com/Laniman/threejs-brain-animation (not copied)",
+  "spider": "Original Canvas IK courier using real feed chips",
+  "typescript_sha256": "7ae5111e9e75a594a9f7ae776055f587421e3210e408b6d5f11ec62848b0b3ad",
+  "txt_sha256": "c96923cfb0841963ccebcd6d4235bfd86b6e8f2f5c0f90290d5ecde63414eece"
+}
