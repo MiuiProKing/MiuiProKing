@@ -50,7 +50,7 @@ async function refresh(){
   if(!res.ok)throw Error('HTTP '+res.status+' — проверьте таблицу, ключ и RLS');
   const data=await res.json();
   if(current!==seq)return;
-  const rows=data.filter(r=>Number.isFinite(Number(r.coefficient))&&Number(r.coefficient)>0&&Number.isFinite(Date.parse(r.round_timestamp))).sort((a,b)=>Date.parse(a.played_at)-Date.parse(b.played_at));
+  const rows=data.filter(r=>Number.isFinite(Number(r.coefficient))&&Number(r.coefficient)>0&&Number.isFinite(Date.parse(r.round_timestamp))).sort((a,b)=>Date.parse(a.round_timestamp)-Date.parse(b.round_timestamp));
   show(rows);status('● Подключено · обновление каждые 10 секунд');
  }catch(err){if(current===seq)status('Ошибка: '+err.message)}
  finally{busy=false}
