@@ -13,7 +13,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const storageKey='luckyjet-v6-config';
-let config={url:'',key:'',table:'luckyjet_rounds'},busy=false,seq=0;
+let config={url:'https://stzrirukuxcyalrsstxx.supabase.co',key:'sb_publishable_ZhoUzbPBM33K3qoL-HY20Q_oVU4ebc7',table:'luckyjet_rounds'},busy=false,seq=0;
 try{config={...config,...JSON.parse(localStorage.getItem(storageKey)||'{}')}}catch{}
 function calculateTargetX(history){
  if(!Array.isArray(history)||history.length<3)return null;
@@ -34,23 +34,23 @@ function show(rows){
  $('latest').textContent=history.length?history.at(-1).toFixed(2)+'×':'—';
  $('updated').textContent=new Date().toLocaleTimeString('ru-RU');
  const feed=$('feed');feed.replaceChildren();
- for(const r of rows.slice(-5).reverse()){const el=document.createElement('div');el.className='chip '+(r.coefficient>=10?'high':r.coefficient>=2?'mid':'');const b=document.createElement('b');b.textContent=Number(r.coefficient).toFixed(2)+'×';const t=document.createElement('time');t.textContent=formatTime(r.played_at);el.append(b,t);feed.append(el)}
+ for(const r of rows.slice(-5).reverse()){const el=document.createElement('div');el.className='chip '+(r.coefficient>=10?'high':r.coefficient>=2?'mid':'');const b=document.createElement('b');b.textContent=Number(r.coefficient).toFixed(2)+'×';const t=document.createElement('time');t.textContent=formatTime(r.round_timestamp);el.append(b,t);feed.append(el)}
  const container=$('history');container.replaceChildren();
- for(const r of rows.slice(-100).reverse()){const line=document.createElement('div');line.className='item';const time=document.createElement('span');time.textContent=formatTime(r.played_at);const val=document.createElement('b');val.textContent=Number(r.coefficient).toFixed(2)+'×';line.append(time,val);container.append(line)}
+ for(const r of rows.slice(-100).reverse()){const line=document.createElement('div');line.className='item';const time=document.createElement('span');time.textContent=formatTime(r.round_timestamp);const val=document.createElement('b');val.textContent=Number(r.coefficient).toFixed(2)+'×';line.append(time,val);container.append(line)}
 }
 async function refresh(){
  if(busy||!config.url||!config.key)return;
  busy=true;const current=seq;
  try{
   const url=new URL('/rest/v1/'+encodeURIComponent(config.table),config.url);
-  url.searchParams.set('select','id,coefficient,played_at');
-  url.searchParams.set('order','played_at.desc');
+  url.searchParams.set('select','id,coefficient,round_timestamp');
+  url.searchParams.set('order','round_timestamp.desc');
   url.searchParams.set('limit','2000');
-  const res=await fetch(url,{headers:{apikey:config.key,Authorization:'Bearer '+config.key,Accept:'application/json'},cache:'no-store'});
+  const res=await fetch(url,{headers:{apikey:config.key,Accept:'application/json'},cache:'no-store'});
   if(!res.ok)throw Error('HTTP '+res.status+' — проверьте таблицу, ключ и RLS');
   const data=await res.json();
   if(current!==seq)return;
-  const rows=data.filter(r=>Number.isFinite(Number(r.coefficient))&&Number(r.coefficient)>0&&Number.isFinite(Date.parse(r.played_at))).sort((a,b)=>Date.parse(a.played_at)-Date.parse(b.played_at));
+  const rows=data.filter(r=>Number.isFinite(Number(r.coefficient))&&Number(r.coefficient)>0&&Number.isFinite(Date.parse(r.round_timestamp))).sort((a,b)=>Date.parse(a.played_at)-Date.parse(b.played_at));
   show(rows);status('● Подключено · обновление каждые 10 секунд');
  }catch(err){if(current===seq)status('Ошибка: '+err.message)}
  finally{busy=false}
