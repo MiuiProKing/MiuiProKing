@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000000"><title>GOD PREDITOR · V6 TARGET X</title>
+<link rel="stylesheet" href="../luckyjet-time-echo/style.css">
+<style>
+:root{color-scheme:dark}body{background:#000}.shell{max-width:560px}.brand p{color:#a487c8}.feed{margin:22px auto 12px}.orb-wrap{min-height:300px;display:grid;place-items:center;position:relative;width:100%}.v6-orb{width:270px;height:270px;border-radius:50%;background:radial-gradient(circle at 38% 30%,#3c1859 0,#170b2a 33%,#090b19 65%,#020207 80%);border:1px solid #6b3889;box-shadow:0 0 65px #7024aa55,inset 0 0 45px #7032ac55;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:pulse 4s ease-in-out infinite}.v6-orb small{letter-spacing:.25em;color:#b9a1d1;font-size:11px}.v6-orb strong{font-size:58px;color:#f5dfff;text-shadow:0 0 22px #ba6dff}.v6-orb span{font-size:11px;color:#aaa}.status{text-align:center;color:#a3a0b0;font-size:12px;min-height:24px}.section{width:100%;border:1px solid #282131;border-radius:20px;background:#0a0910;padding:17px;margin-top:17px}.section h2{font-size:13px;letter-spacing:.12em;margin:0 0 12px}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:#110e19;border:1px solid #2b2137;border-radius:13px;padding:12px}.stat small{display:block;color:#8e8999;font-size:10px}.stat b{font-size:21px;color:#e9d4ff}.rows{max-height:300px;overflow:auto}.item{display:flex;justify-content:space-between;border-bottom:1px solid #211c29;padding:9px 0;font-family:ui-monospace,monospace;font-size:12px}.item b{color:#d6a4ff}.settings{display:grid;gap:10px}.settings input{width:100%;padding:12px;border-radius:10px;background:#050408;border:1px solid #44364f;color:white}.settings button{padding:12px;background:#51256d;border-radius:12px}.note{font-size:11px;color:#80798b;line-height:1.5}.chip{min-width:0}.chip b{font-size:13px}@keyframes pulse{50%{box-shadow:0 0 95px #8b36bd88,inset 0 0 65px #7b3ec177;transform:scale(1.02)}}@media(max-width:400px){.v6-orb{width:245px;height:245px}.v6-orb strong{font-size:49px}}
+</style></head><body><div class="shell"><header class="top"><div class="brand"><h1>GOD PREDITOR</h1><p>LUCKYJET · V6 TARGET X</p></div><button class="history-button" id="settingsToggle">⚙ Подключение</button></header>
+<main><div class="feed" id="feed"></div><section class="orb-wrap"><div class="v6-orb"><small>TARGET X · V6</small><strong id="target">—</strong><span>Последние 3 раунда × 1.10</span></div></section><p class="status" id="status">Подключение к истории…</p>
+<div class="section"><h2>АНАЛИЗ V6</h2><div class="stats"><div class="stat"><small>СРЕДНЕЕ ПОСЛЕДНИХ 3</small><b id="average">—</b></div><div class="stat"><small>РАУНДОВ ЗАГРУЖЕНО</small><b id="count">0</b></div><div class="stat"><small>ПОСЛЕДНИЙ КОЭФФИЦИЕНТ</small><b id="latest">—</b></div><div class="stat"><small>ОБНОВЛЕНО</small><b id="updated">—</b></div></div></div>
+<div class="section" id="settingsPanel" hidden><h2>SUPABASE · НАСТРОЙКИ</h2><div class="settings"><input id="url" placeholder="https://PROJECT.supabase.co" autocomplete="off"><input id="key" placeholder="Supabase publishable / anon key" autocomplete="off"><input id="table" value="luckyjet_rounds" placeholder="Таблица"><button id="save">Сохранить и подключить</button></div><p class="note">Используйте только публичный anon/publishable ключ с настроенной RLS-политикой SELECT. Не вводите service_role или секретные ключи. Настройки хранятся только в этом браузере.</p></div>
+<div class="section"><h2>ИСТОРИЯ КОЭФФИЦИЕНТОВ</h2><div class="rows" id="history"><p class="note">Ожидание данных…</p></div></div><p class="note">TARGET X — арифметический ориентир, не гарантия результата следующего раунда. История должна быть отсортирована от старых раундов к новым.</p>
+</main></div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const storageKey='luckyjet-v6-config';
+let config={url:'',key:'',table:'luckyjet_rounds'},busy=false,seq=0;
+try{config={...config,...JSON.parse(localStorage.getItem(storageKey)||'{}')}}catch{}
+function calculateTargetX(history){
+ if(!Array.isArray(history)||history.length<3)return null;
+ const last3=history.slice(-3).map(Number);
+ if(last3.some(x=>!Number.isFinite(x)||x<=0))return null;
+ const average=last3.reduce((sum,x)=>sum+x,0)/3;
+ const target=Math.min(average*1.10,2.40);
+ return Number(target.toFixed(2));
+}
+function status(message){$('status').textContent=message}
+function formatTime(value){const d=new Date(value);return Number.isFinite(d.getTime())?d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—'}
+function show(rows){
+ const history=rows.map(r=>Number(r.coefficient));
+ const target=calculateTargetX(history),last3=history.slice(-3);
+ $('target').textContent=target===null?'—':target.toFixed(2)+'×';
+ $('average').textContent=last3.length===3?(last3.reduce((a,b)=>a+b,0)/3).toFixed(2)+'×':'—';
+ $('count').textContent=String(rows.length);
+ $('latest').textContent=history.length?history.at(-1).toFixed(2)+'×':'—';
+ $('updated').textContent=new Date().toLocaleTimeString('ru-RU');
+ const feed=$('feed');feed.replaceChildren();
+ for(const r of rows.slice(-5).reverse()){const el=document.createElement('div');el.className='chip '+(r.coefficient>=10?'high':r.coefficient>=2?'mid':'');const b=document.createElement('b');b.textContent=Number(r.coefficient).toFixed(2)+'×';const t=document.createElement('time');t.textContent=formatTime(r.played_at);el.append(b,t);feed.append(el)}
+ const container=$('history');container.replaceChildren();
+ for(const r of rows.slice(-100).reverse()){const line=document.createElement('div');line.className='item';const time=document.createElement('span');time.textContent=formatTime(r.played_at);const val=document.createElement('b');val.textContent=Number(r.coefficient).toFixed(2)+'×';line.append(time,val);container.append(line)}
+}
+async function refresh(){
+ if(busy||!config.url||!config.key)return;
+ busy=true;const current=seq;
+ try{
+  const url=new URL('/rest/v1/'+encodeURIComponent(config.table),config.url);
+  url.searchParams.set('select','id,coefficient,played_at');
+  url.searchParams.set('order','played_at.desc');
+  url.searchParams.set('limit','2000');
+  const res=await fetch(url,{headers:{apikey:config.key,Authorization:'Bearer '+config.key,Accept:'application/json'},cache:'no-store'});
+  if(!res.ok)throw Error('HTTP '+res.status+' — проверьте таблицу, ключ и RLS');
+  const data=await res.json();
+  if(current!==seq)return;
+  const rows=data.filter(r=>Number.isFinite(Number(r.coefficient))&&Number(r.coefficient)>0&&Number.isFinite(Date.parse(r.played_at))).sort((a,b)=>Date.parse(a.played_at)-Date.parse(b.played_at));
+  show(rows);status('● Подключено · обновление каждые 10 секунд');
+ }catch(err){if(current===seq)status('Ошибка: '+err.message)}
+ finally{busy=false}
+}
+$('settingsToggle').onclick=()=>{$('settingsPanel').hidden=!$('settingsPanel').hidden};
+$('url').value=config.url;$('key').value=config.key;$('table').value=config.table;
+$('save').onclick=()=>{const url=$('url').value.trim().replace(/\/$/,'');const key=$('key').value.trim();const table=$('table').value.trim();if(!/^https:\/\/[a-z0-9.-]+\.supabase\.co$/i.test(url)||!key||!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(table)){status('Проверьте URL Supabase, ключ и имя таблицы');return}config={url,key,table};localStorage.setItem(storageKey,JSON.stringify(config));seq++;$('settingsPanel').hidden=true;refresh()};
+if(!config.url||!config.key){$('settingsPanel').hidden=false;status('Введите параметры Supabase для подключения')}else refresh();
+setInterval(refresh,10000);
+</script></body></html>
