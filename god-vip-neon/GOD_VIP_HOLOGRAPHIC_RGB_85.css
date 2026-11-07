@@ -1,0 +1,58 @@
+/*
+ GOD PREDITOR PRO VIP — HOLOGRAPHIC RGB 85
+ Hyperweb Safari custom CSS. Visual-only, no data or JavaScript changes.
+ IMPORTANT: Hyperweb must scope this stylesheet to
+ https://miuiproking.github.io/luckyjet-telegram-mini-app/god-preditor-pro-vip/
+ CSS alone cannot reliably check the current page URL in Safari.
+*/
+:root {
+  color-scheme: dark;
+  --vip-rgb-power: .85;
+  --vip-black: #000;
+  --vip-violet: #b33cff;
+  --vip-cyan: #00e5ff;
+  --vip-green: #00ff91;
+  --vip-red: #ff315e;
+  --vip-gold: #ffb800;
+}
+html, body {
+  background-color: #000 !important;
+  color-scheme: dark !important;
+}
+body {
+  background-image: radial-gradient(ellipse 95% 28% at 50% -8%, rgba(126,31,255,.13), transparent 80%) !important;
+  isolation: isolate;
+}
+/* Saturation and contrast only for the main app, not Safari itself. */
+body > :is(#root, #app, #__next, main) {
+  filter: saturate(1.72) contrast(1.13) brightness(1.06);
+}
+/* Preserve all original accents, add subtle light around panels. */
+:is([class*="card"],[class*="Card"],[class*="panel"],[class*="Panel"],[class*="tile"],[class*="Tile"]) {
+  box-shadow:
+    0 0 10px rgba(144,48,255,.22),
+    0 0 23px rgba(0,194,255,.07),
+    inset 0 0 9px rgba(165,80,255,.055) !important;
+}
+/* Neon on elements already marked as glow/neon; no blanket text shadows. */
+:is([class*="neon"],[class*="Neon"],[class*="glow"],[class*="Glow"]) {
+  filter: drop-shadow(0 0 6px rgba(160,65,255,.85)) saturate(1.25);
+}
+:is(button,a,[role="button"]):focus-visible {
+  outline: 2px solid var(--vip-cyan) !important;
+  outline-offset: 2px;
+}
+::selection {background:#6f25e0;color:#fff;}
+/* Holographic light sweep only on main panels, not on the data itself. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes vip-holo-pulse {
+    0%,100% { box-shadow: 0 0 9px rgba(163,53,255,.17), 0 0 18px rgba(0,194,255,.045), inset 0 0 7px rgba(155,66,255,.04); }
+    50% { box-shadow: 0 0 16px rgba(163,53,255,.33), 0 0 27px rgba(0,194,255,.12), inset 0 0 10px rgba(155,66,255,.08); }
+  }
+  :is([class*="card"],[class*="Card"],[class*="panel"],[class*="Panel"]) {
+    animation: vip-holo-pulse 5.5s ease-in-out infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is([class*="card"],[class*="Card"],[class*="panel"],[class*="Panel"]) {animation:none!important;}
+}
