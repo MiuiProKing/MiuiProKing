@@ -1,0 +1,45 @@
+/* GOD VIP HOLOGRAM MOTION V2 — Safari Hyperweb
+   85% visual intensity. Scope this stylesheet in Hyperweb ONLY to
+   https://miuiproking.github.io/luckyjet-telegram-mini-app/god-preditor-pro-vip/
+   CSS cannot enforce URL restrictions on its own.
+   Pure CSS: no JS, API, Supabase, data or predictor changes.
+*/
+:root{color-scheme:dark;--vip-purple:#b800ff;--vip-cyan:#00eaff;--vip-pink:#ff1f9b}
+html,body{background-color:#000!important;color-scheme:dark!important}
+body{isolation:isolate;background-color:#000!important}
+/* Two unmistakable animated laser lights fixed behind all app content */
+body::before,body::after{
+ content:"";position:fixed;inset:-28%;pointer-events:none;
+ z-index:-1;mix-blend-mode:screen;will-change:transform,opacity;
+}
+body::before{
+ background:
+  conic-gradient(from 20deg at 50% 50%,transparent 0deg,rgba(0,234,255,.0) 55deg,rgba(0,234,255,.35) 75deg,transparent 100deg,transparent 180deg,rgba(184,0,255,.4) 210deg,transparent 238deg,transparent 360deg);
+ filter:blur(30px);
+ animation:vip-rgb-orbit 9s linear infinite;
+}
+body::after{
+ background:radial-gradient(ellipse 32% 22% at 28% 30%,rgba(193,0,255,.45),transparent 90%),
+ radial-gradient(ellipse 26% 30% at 75% 68%,rgba(0,209,255,.38),transparent 88%),
+ radial-gradient(ellipse 20% 17% at 60% 20%,rgba(255,0,122,.23),transparent 90%);
+ filter:blur(24px);
+ animation:vip-aurora-drift 6s ease-in-out infinite alternate;
+}
+/* Keep animation visible even when root creates its own background */
+body > :is(#root,#app,#__next,main){background-color:transparent!important;filter:saturate(1.65) contrast(1.13) brightness(1.07)}
+/* Neon panel edges + visible oscillating glow */
+:is([class*="card"],[class*="Card"],[class*="panel"],[class*="Panel"],[class*="widget"],[class*="Widget"],[class*="signal"],[class*="Signal"]){
+ box-shadow:0 0 9px rgba(183,55,255,.5),0 0 22px rgba(0,234,255,.17),inset 0 0 12px rgba(161,36,255,.1)!important;
+ animation:vip-border-breathe 2.4s ease-in-out infinite alternate!important;
+}
+:is([class*="neon"],[class*="glow"],[class*="Glow"]){filter:drop-shadow(0 0 9px rgba(192,58,255,.95))!important}
+@keyframes vip-rgb-orbit{from{transform:rotate(0deg) scale(1)}to{transform:rotate(360deg) scale(1.08)}}
+@keyframes vip-aurora-drift{0%{transform:translate(-12%,8%) scale(1);opacity:.7}100%{transform:translate(12%,-9%) scale(1.16);opacity:1}}
+@keyframes vip-border-breathe{
+ 0%{box-shadow:0 0 5px rgba(183,55,255,.38),0 0 12px rgba(0,234,255,.09),inset 0 0 7px rgba(161,36,255,.05)}
+ 100%{box-shadow:0 0 17px rgba(183,55,255,.85),0 0 34px rgba(0,234,255,.35),inset 0 0 16px rgba(161,36,255,.15)}
+}
+@media(prefers-reduced-motion:reduce){
+ body::before,body::after{animation:none!important}
+ :is([class*="card"],[class*="Card"],[class*="panel"],[class*="Panel"],[class*="widget"],[class*="Widget"],[class*="signal"],[class*="Signal"]){animation:none!important}
+}
