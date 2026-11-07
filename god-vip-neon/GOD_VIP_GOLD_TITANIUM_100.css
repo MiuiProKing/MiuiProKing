@@ -1,0 +1,64 @@
+/*
+ GOD PREDITOR VIP — GOLD TITANIUM 100
+ Safari Hyperweb Custom Styles. VISUAL ONLY.
+ IMPORTANT: Configure Hyperweb to apply ONLY to:
+ https://miuiproking.github.io/luckyjet-telegram-mini-app/god-preditor-pro-vip/
+ A remote CSS file cannot independently restrict its URL.
+ No changes to original HTML, JS, prediction logic or Supabase.
+*/
+:root{color-scheme:dark!important;--vip-gold:#ffd65a;--vip-gold-hot:#fff0aa;--vip-amber:#ff9c00;--vip-titanium:#191919}
+html,body{background:#000!important;color-scheme:dark!important}
+body{isolation:isolate;background:#000!important}
+/* Always-visible moving gold aurora and diagonal scanning beam, overlay is noninteractive. */
+body::before,body::after{
+ content:"";position:fixed;inset:0;pointer-events:none!important;
+ z-index:2147483000;will-change:transform,opacity;
+}
+body::before{
+ background:linear-gradient(112deg,transparent 0%,transparent 36%,rgba(255,178,29,.02) 43%,rgba(255,222,100,.19) 49%,rgba(255,248,195,.28) 50%,rgba(255,196,45,.13) 52%,transparent 59%,transparent 100%);
+ transform:translateX(-125%);
+ animation:vip-gold-sweep 4.6s linear infinite!important;
+ mix-blend-mode:screen;
+}
+body::after{
+ background:
+ radial-gradient(ellipse 70% 20% at 50% 0%,rgba(255,191,34,.18),transparent 80%),
+ linear-gradient(180deg,transparent 0%,rgba(255,195,35,.075) 50%,transparent 100%);
+ opacity:.35;
+ animation:vip-gold-ambient 3s ease-in-out infinite alternate!important;
+ mix-blend-mode:screen;
+}
+/* Strong titanium black and gold accents, preserving functional states and semantic colors */
+:is([class*="card"],[class*="Card"],[class*="panel"],[class*="Panel"],[class*="widget"],[class*="Widget"],[class*="signal"],[class*="Signal"]){
+ border-color:rgba(255,200,66,.65)!important;
+ box-shadow:0 0 10px rgba(255,180,30,.5),0 0 27px rgba(255,175,0,.25),inset 0 0 13px rgba(255,220,100,.09)!important;
+ animation:vip-gold-heartbeat 1.8s ease-in-out infinite alternate!important;
+}
+:is(h1,h2,[class*="title"],[class*="Title"]){
+ text-shadow:0 0 9px rgba(255,201,65,.35);
+}
+:is(button,[role="button"]){
+ transition:box-shadow .25s ease,filter .25s ease!important;
+}
+:is(button,[role="button"]):active{
+ filter:brightness(1.25)!important;
+ box-shadow:0 0 23px rgba(255,195,35,.7)!important;
+}
+:is(button,a,[role="button"]):focus-visible{outline:2px solid #ffdf76!important;outline-offset:2px}
+::selection{background:#b77c00;color:#fff}
+@keyframes vip-gold-sweep{
+ 0%{transform:translateX(-125%)}
+ 100%{transform:translateX(125%)}
+}
+@keyframes vip-gold-ambient{
+ 0%{opacity:.22;transform:translateY(-3%) scale(1)}
+ 100%{opacity:.8;transform:translateY(4%) scale(1.12)}
+}
+@keyframes vip-gold-heartbeat{
+ 0%{box-shadow:0 0 7px rgba(255,185,25,.35),0 0 15px rgba(255,175,0,.14),inset 0 0 8px rgba(255,210,85,.06)}
+ 100%{box-shadow:0 0 18px rgba(255,204,45,.9),0 0 38px rgba(255,175,0,.46),inset 0 0 16px rgba(255,220,100,.14)}
+}
+@media(prefers-reduced-motion:reduce){
+ body::before,body::after{animation:none!important}
+ :is([class*="card"],[class*="Card"],[class*="panel"],[class*="Panel"],[class*="widget"],[class*="Widget"],[class*="signal"],[class*="Signal"]){animation:none!important}
+}
