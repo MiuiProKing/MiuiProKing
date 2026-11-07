@@ -1,0 +1,9 @@
+/* REALITY COLLAPSE X: isolated Safari Hyperweb overlay. Scope Custom Styles to GOD VIP page. */
+#rcx-scene{position:fixed;inset:0;z-index:2147483000;pointer-events:none;overflow:hidden;isolation:isolate;contain:layout style;--gold:#ffd47d}
+#rcx-scene canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#rcx-scene .rcx-ui{position:absolute;right:10px;bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:7px;pointer-events:auto;z-index:3}
+#rcx-scene button{background:rgba(6,5,4,.88);border:1px solid #b88a43;color:#ffe5aa;padding:9px 11px;border-radius:22px;font:600 11px -apple-system,system-ui;box-shadow:0 0 14px #b07c3755;cursor:pointer}
+#rcx-scene button:active{background:#523813}
+#rcx-scene .rcx-caption{position:absolute;top:calc(20px + env(safe-area-inset-top));left:0;right:0;text-align:center;color:#ffe6ac;text-shadow:0 0 14px #ffbb44;font:700 12px -apple-system,system-ui;letter-spacing:.32em;opacity:.78;animation:rcx-flicker 3s infinite;pointer-events:none}
+@keyframes rcx-flicker{0%,92%,100%{opacity:.78}94%{opacity:.22}96%{opacity:1}}
+@media(prefers-reduced-motion:reduce){#rcx-scene .rcx-caption{animation:none}}
