@@ -1,0 +1,8 @@
+/* GOD PREDITOR VIP — RED INFERNO. Safari Custom Styles; visual changes only. */
+:root { --god-neon: #ff345a; --god-neon-deep: #d50030; --god-neon-soft: #ffb1be; color-scheme: dark; }
+html, body { background-color: #030308 !important; }
+body { background-image: radial-gradient(ellipse 100% 38% at 50% 0%, color-mix(in srgb, var(--god-neon) 12%, transparent), transparent 78%) !important; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--god-neon) !important; outline-offset: 2px; }
+:is([class*="card"], [class*="Card"], [class*="panel"], [class*="Panel"]) { box-shadow: 0 0 14px color-mix(in srgb, var(--god-neon) 14%, transparent), inset 0 0 13px color-mix(in srgb, var(--god-neon) 5%, transparent) !important; }
+:is([class*="neon"], [class*="glow"], [class*="Glow"]) { filter: drop-shadow(0 0 7px var(--god-neon)) !important; }
+::selection { background: var(--god-neon-deep); color: white; }
