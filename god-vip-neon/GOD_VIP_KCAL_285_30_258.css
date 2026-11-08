@@ -1,9 +1,9 @@
 /* GOD VIP KCAL — universal site color correction for all visitors.
    Visual approximation only: not Android kernel controls.
-   saturation=680%, hue=160deg, brightness=300.2%.
+   saturation=100%, hue=0deg, brightness=100% (readable original colors).
    Applies to ordinary top-level page elements, leaves 5D overlays independent.
 */
-:root{--kcal-sat:6.8;--kcal-hue:160deg;--kcal-value:3.002}
+:root{--kcal-sat:1;--kcal-hue:0deg;--kcal-value:1}
 body > :not(script):not(style):not(link):not(#rcx-scene):not(#godvip-reality-breakout){
  filter:saturate(var(--kcal-sat)) hue-rotate(var(--kcal-hue)) brightness(var(--kcal-value))!important;
 }
