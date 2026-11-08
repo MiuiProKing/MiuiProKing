@@ -1,18 +1,11 @@
-/* GOD PREDITOR VIP — KCAL COLOR BOOST
-   Android-inspired visual equivalents:
-   kcal_sat 285 -> saturation 2.85
-   kcal_hue 30 -> hue-rotate(30deg)
-   kcal_val 258 -> brightness(258/255 = 1.01176)
-   These are CSS approximations, NOT physical screen controls.
-   Scope this stylesheet to the GOD PREDITOR VIP URL in Hyperweb.
-   Avoid affecting our 5D overlay: only filter app container, not body.
+/* GOD VIP KCAL — universal site color correction for all visitors.
+   Visual approximation only: not Android kernel controls.
+   saturation=285%, hue=30deg, brightness=258/255.
+   Applies to ordinary top-level page elements, leaves 5D overlays independent.
 */
-:root{--kcal-sat:2.85;--kcal-hue:30deg;--kcal-value:1.01176}
-body > :is(#root,#app,#__next,main):not(#rcx-scene):not(#godvip-reality-breakout){
+:root{--kcal-sat:2.85;--kcal-hue:30deg;--kcal-value:1.0117647}
+body > :not(script):not(style):not(link):not(#rcx-scene):not(#godvip-reality-breakout){
  filter:saturate(var(--kcal-sat)) hue-rotate(var(--kcal-hue)) brightness(var(--kcal-value))!important;
 }
-@supports not (filter:saturate(1)){
- body > :is(#root,#app,#__next,main){filter:none!important}
-}
-/* Keep separate canvas overlays visually independent and readable */
 #rcx-scene,#godvip-reality-breakout{filter:none!important}
+@media print{body > :not(script):not(style):not(link){filter:none!important}}
