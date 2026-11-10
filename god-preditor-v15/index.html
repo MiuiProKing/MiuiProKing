@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="GOD PREDITOR V15 • анализ подтверждённой истории LuckyJet из Supabase">
+<title>GOD PREDITOR V15 · LuckyJet</title>
+<link rel="stylesheet" href="./theme-v15.css?v=15.0">
+<script type="module" src="./app-v15.js?v=15.0"></script>
+</head>
+<body data-vip-skin="echo">
+<div class="shell">
+<header class="top">
+ <div class="brand"><h1>GOD PREDITOR <span style="color:#c66dff">V15</span></h1><p>LUCKYJET · TIME ECHO · SURVIVAL LAB</p></div>
+ <button id="openHistory" class="history-button" aria-label="История контрольных прогнозов">◷ <span>История</span></button>
+</header>
+<main class="v15-main">
+ <div class="v15-status"><b id="sourceStatus" class="wait">ПОДКЛЮЧЕНИЕ</b><span id="progressText">Загрузка подтверждённых раундов…</span></div>
+ <div id="connectionError" role="alert"></div>
+ <div id="lastUpdate" class="v15-meta">Ожидание Supabase</div>
+ <div class="feed v15-feed" id="feed" aria-label="Пять последних коэффициентов"></div>
+ <section class="v15-hero">
+  <div class="v15-focus"><div class="v15-orb"><div class="inner"></div><div class="v15-core">
+   <div class="label">ЦЕЛЕВОЙ МНОЖИТЕЛЬ · V6</div>
+   <strong id="heroTarget">—</strong>
+   <div class="subtext" id="heroNote">Анализ последних коэффициентов</div>
+  </div></div><div class="echo">AMOLED ULTRA VIVID · EXPERIMENTAL V15</div></div>
+  <div class="v15-panel">
+   <div class="upper">НАБЛЮДЕНИЕ И ВРЕМЕННЫЕ ОКНА</div>
+   <h2 style="font-size:25px;margin:9px 0 6px">TIME &amp; SURVIVAL</h2>
+   <div class="v15-meta">Ориентир следующего исторического интервала (Киев)</div>
+   <div style="font:700 clamp(20px,3vw,28px) var(--mono);color:#dfb9ff;margin:9px 0" id="heroTime">—</div>
+   <div class="v15-config">
+    <label>Порог <select id="threshold" aria-label="Порог коэффициента">
+     <option value="2">≥2×</option><option value="5">≥5×</option><option value="10">≥10×</option><option value="20">≥20×</option><option value="50">≥50×</option><option value="100" selected>≥100×</option>
+    </select></label>
+    <label>Окно <select id="horizon" aria-label="Горизонт прогноза">
+     <option value="1">1 раунд</option><option value="3" selected>3 раунда</option><option value="5">5 раундов</option><option value="10">10 раундов</option>
+    </select></label>
+   </div>
+   <p class="v15-meta" id="thresholdLabel">Вероятность выбранного X</p>
+   <div class="v15-config"><button id="reload" class="ghost-btn">Обновить коэффициенты</button><button id="saveSignal" class="purple-btn">Зафиксировать прогноз</button></div>
+   <div class="v15-warning">Расчёт по прошлым раундам не гарантирует следующий X, точное время или результат ставки. Ориентир времени — статистика интервалов, не расписание игры.</div>
+  </div>
+ </section>
+ <section class="v15-grid">
+  <article class="v15-panel"><div class="stat-label">История раундов</div><div class="stat-value" id="dataCount">—</div><div class="stat-foot">Автоматическая постраничная загрузка</div></article>
+  <article class="v15-panel"><div class="stat-label">Последний коэффициент</div><div class="stat-value" id="lastX">—</div><div class="stat-foot">Только completed=true</div></article>
+  <article class="v15-panel"><div class="stat-label">Максимум истории</div><div class="stat-value" id="maxX">—</div><div class="stat-foot">Без оценочных раундов</div></article>
+  <article class="v15-panel"><div class="stat-label">Базовая P(≥X) в окне</div><div class="stat-value" id="base">—</div><div class="stat-foot">Частота с Beta-сглаживанием</div></article>
+ </section>
+ <section class="v15-grid triple">
+  <article class="v15-panel"><h2>Bayesian Survival</h2><div class="stat-value" id="survival">—</div><p id="riskText" class="v15-meta">Эмпирическая вероятность по интервалам</p></article>
+  <article class="v15-panel"><h2>Weibull Hazard</h2><div class="stat-value" id="weibull">—</div><p id="weibullText" class="v15-meta">Условная вероятность из модели межсобытийных интервалов</p></article>
+  <article class="v15-panel"><h2>Медианный цикл ≥X</h2><div class="stat-value" id="gap">—</div><p id="gapContext" class="v15-meta">Интервалы по раундам</p></article>
+ </section>
+ <section class="v15-grid">
+  <article class="v15-panel"><div class="stat-label">EMA20</div><div class="stat-value" id="ema20">—</div></article>
+  <article class="v15-panel"><div class="stat-label">EMA50</div><div class="stat-value" id="ema50">—</div></article>
+  <article class="v15-panel"><div class="stat-label">Медиана 50</div><div class="stat-value" id="median50">—</div></article>
+  <article class="v15-panel"><div class="stat-label">MAD 50</div><div class="stat-value" id="mad50">—</div></article>
+ </section>
+ <section class="v15-grid double">
+  <article class="v15-panel">
+   <h2>Минуты больших X · Киев</h2><div class="v15-meta">Частоты за минуту часа (00–59). Смещение Киев–UTC целочасовое, поэтому минуты совпадают; рейтинг не означает повторяемость будущих исходов.</div>
+   <div class="v15-scroll"><table class="v15-table"><thead><tr><th>Минута</th><th>≥X / всего</th><th>Частота</th></tr></thead><tbody id="minutes"></tbody></table></div>
+  </article>
+  <article class="v15-panel">
+   <h2>Секунды больших X · Киев</h2><div class="v15-meta">Историческая частота по секундам (00–59), без выдачи точной секунды как гарантии.</div>
+   <div class="v15-scroll"><table class="v15-table"><thead><tr><th>Секунда</th><th>≥X / всего</th><th>Частота</th></tr></thead><tbody id="seconds"></tbody></table></div>
+  </article>
+ </section>
+ <section class="v15-grid double">
+  <article class="v15-panel"><h2>Кластеры и неопределённость</h2><p id="clusterText" class="v15-meta">Последние 80 раундов</p><p id="ciText" class="v15-meta">Bootstrap CI</p>
+    <svg viewBox="0 0 760 130" style="width:100%;max-height:170px;background:#07050b;border-radius:9px" role="img" aria-label="Логарифмическая динамика последних 80 коэффициентов"><path d="M0 115 L760 115" stroke="#343040"/><path id="chartPath" d="" stroke="#b966ff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </article>
+  <article class="v15-panel"><h2>Walk-forward бэктест 70% / 30%</h2>
+   <div class="stat-value" id="brierText">—</div>
+   <div id="brierSub" class="v15-meta">Brier score: модель минут / базовая частота</div>
+   <div class="v15-warning" id="qualityText">Проверка качества после загрузки данных</div>
+   <p class="v15-meta">Модель минут использует сглаженные частоты только из обучающей части. Меньший Brier лучше; без превосходства над baseline сигнал слабый.</p>
+  </article>
+ </section>
+ <section class="v15-panel"><div class="v15-config" style="justify-content:space-between"><h2>История коэффициентов</h2><button id="loadAll" class="ghost-btn">Загрузить всю историю</button></div>
+  <div class="v15-meta">Последние 25 подтверждённых раундов · время Europe/Kyiv · <span id="signalsCount">0 записей</span> контрольных прогнозов</div>
+  <div class="v15-scroll"><table class="v15-table"><thead><tr><th>Время (Киев)</th><th>Коэффициент</th><th>Источник №</th></tr></thead><tbody id="roundHistory"></tbody></table></div>
+ </section>
+ <footer class="v15-foot">GOD PREDITOR V15 · Supabase read-only · 15-секундное обновление · EMA / MAD / Bootstrap / Weibull / Survival / Walk-forward. Архивы HISTORIQUE использовались только как технические материалы для анализа формул и проверки окон. Оригинальный TIME ECHO не изменён. Контрольный WIN/LOSE — проверка достижения X в следующих N наблюдаемых раундах, не подтверждение выигрыша ставки.</footer>
+</main>
+</div>
+<dialog id="historyDialog" aria-label="Контрольные прогнозы"><button id="closeHistory" class="ghost-btn">Закрыть ×</button><h2>История контрольных прогнозов</h2><p class="v15-meta">Проверка достижений порога ≥X в следующих N подтверждённых раундах. Записи локально в этом браузере.</p><div class="v15-scroll"><table class="v15-table"><thead><tr><th>Создан</th><th>Цель</th><th>Результат</th></tr></thead><tbody id="checks"></tbody></table></div></dialog>
+</body></html>
