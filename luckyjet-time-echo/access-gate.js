@@ -1,9 +1,7 @@
 /* Visual access gate for TIME ECHO. This is a client-side lock, not server authorization. */
 (() => {
   'use strict';
-  const KEY = 'god_time_echo_1993_unlocked_v1';
-  const already = (() => { try { return sessionStorage.getItem(KEY) === 'yes'; } catch { return false; } })();
-  if (already) { document.documentElement.classList.add('god-gate-open'); return; }
+  // Always require the password on each page load, including same-tab reloads.
   document.documentElement.classList.add('god-gate-locked');
   function mount() {
     if (document.getElementById('godAccessGate')) return;
@@ -23,7 +21,6 @@
     document.getElementById('godGateForm').addEventListener('submit', (event) => {
       event.preventDefault();
       if (input.value === '1993') {
-        try { sessionStorage.setItem(KEY, 'yes'); } catch {}
         document.documentElement.classList.remove('god-gate-locked');
         document.documentElement.classList.add('god-gate-open');
         gate.remove();
