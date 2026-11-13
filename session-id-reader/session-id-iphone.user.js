@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Lucky Jet — посмотреть session-id на iPhone
 // @namespace    god-preditor-local-tools
-// @version      1.0.0
-// @description  Локально ищет session-id в адресе игры и iframe. Работает без отправки данных.
+// @version      1.1.0
+// @description  Ищет session-id открытой Lucky Jet в URL, iframe и вложенных ссылках (локально, без отправки данных).
 // @match        https://one-vv1935.com/*
 // @match        https://1play.gamedev-tech.cc/*
 // @run-at       document-idle
@@ -13,7 +13,7 @@
   'use strict';
   const PANEL_ID = 'gp-local-session-reader';
   if (document.getElementById(PANEL_ID)) return;
-  const SESSION_KEYS = new Set(['sessionid', 'gamesessionid']);
+  const SESSION_KEYS = new Set(['sessionid', 'gamesessionid', 'playsessionid', 'launchsessionid']);
   const normalize = key => String(key).toLowerCase().replace(/[-_]/g, '');
   const allowed = url => url.protocol === 'https:' && !url.port && ['one-vv1935.com', '1play.gamedev-tech.cc'].includes(url.hostname);
 
@@ -26,7 +26,7 @@
       visited.add(item.url);
       let url;
       try { url = new URL(item.url, location.href); } catch { continue; }
-      if (!allowed(url)) continue;
+      if (!allowed(url) && !['iframe', 'nested', 'iframe-document'].includes(item.kind)) continue;
       const hash = url.hash.slice(1);
       const parts = [url.search, hash.includes('?') ? hash.slice(hash.indexOf('?') + 1) : hash];
       for (const part of parts) {
@@ -34,8 +34,14 @@
           if (SESSION_KEYS.has(normalize(key)) && value.length >= 16 && value.length <= 8192 && !/[\s\u0000-\u001f\u007f]/.test(value)) {
             // Keep distinct candidates separate; never choose another session silently.
             if (!found.has(value) || item.priority < found.get(value).priority) found.set(value, {value, host: url.hostname, source: item.source, priority: item.priority});
-          } else if (item.depth < 2 && /^https:\/\//i.test(value)) {
-            queue.push({...item, url: value, depth: item.depth + 1});
+           } else if (item.depth < 3) {
+            // URLSearchParams decodes once; some launchers wrap a URL twice.
+            let nested = value;
+            for (let pass = 0; pass < 2 && /%[0-9a-f]{2}/i.test(nested); pass++) {
+              try { const decoded = decodeURIComponent(nested); if (decoded === nested) break; nested = decoded; }
+              catch { break; }
+            }
+            if (/^https:\/\//i.test(nested)) queue.push({...item, url: nested, kind: 'nested', depth: item.depth + 1});
           }
         }
       }
@@ -44,12 +50,43 @@
   }
 
   function find() {
-    const urls = [{url: location.href, source: 'Адрес страницы', priority: location.hostname === '1play.gamedev-tech.cc' ? 0 : 1}];
-    for (const frame of document.querySelectorAll('iframe[src]')) urls.push({url: frame.src, source: 'Текущий iframe', priority: 1});
-    try {
-      for (const entry of performance.getEntriesByType('resource').slice(-400)) urls.push({url: entry.name, source: 'Журнал загрузок — может устареть', priority: 2});
-    } catch {}
-    return extract(urls);
+    const urls = [{url: location.href, source: 'Адрес открытой игры', priority: 0, kind: 'page'}];
+    const docs = [document];
+    let frames = 0;
+    // Check the game page, its current iframe URLs and any same-origin nested frames.
+    // Cross-origin iframe DOM is not accessible; the userscript also needs permission
+    // to run independently on 1play.gamedev-tech.cc when Safari loads that frame.
+    for (let i = 0; i < docs.length && i < 12; i++) {
+      const doc = docs[i];
+      if (i) {
+        try { urls.push({url: doc.URL, source: 'Адрес открытого iframe', priority: 0, kind: 'iframe-document'}); } catch {}
+      }
+      for (const frame of [...doc.querySelectorAll('iframe')].slice(0, 100)) {
+        frames++;
+        for (const src of [frame.getAttribute('src'), frame.getAttribute('data-src')]) {
+          if (src) urls.push({url: src, source: 'Текущий iframe', priority: 1, kind: 'iframe'});
+        }
+        try {
+          const inner = frame.contentDocument;
+          if (inner && !docs.includes(inner)) docs.push(inner);
+        } catch {}
+      }
+      for (const link of [...doc.querySelectorAll('a[href]')].slice(0, 150)) {
+        const href = link.getAttribute('href');
+        if (href && /luckyjet|gamedev-tech|one-vv1935|sessionid|session_id/i.test(href)) {
+          urls.push({url: href, source: 'Ссылка игрового запуска', priority: 2, kind: 'link'});
+        }
+      }
+      try {
+        const entries = doc.defaultView?.performance?.getEntriesByType('resource') || [];
+        for (const entry of entries.slice(-500)) {
+          let url;
+          try { url = new URL(entry.name); } catch { continue; }
+          if (allowed(url)) urls.push({url: entry.name, source: 'Журнал загрузок — может устареть', priority: 3, kind: 'resource'});
+        }
+      } catch {}
+    }
+    return {candidates: extract(urls), frames};
   }
 
   const host = document.createElement('div');
@@ -64,7 +101,7 @@
   const title = document.createElement('h2'); title.textContent = 'Сессия открытой игры';
   const close = document.createElement('button'); close.type = 'button'; close.textContent = '×'; close.setAttribute('aria-label', 'Закрыть и скрыть ключ');
   header.append(title, close);
-  const note = document.createElement('p'); note.textContent = 'Нажми «Найти». Секрет появится только здесь, на твоём устройстве. Не публикуй его и не присылай в чат.';
+  const note = document.createElement('p'); note.textContent = 'Открой Lucky Jet, дождись загрузки и нажми «Найти». ID появится только на этом устройстве. Никому его не отправляй.';
   const status = document.createElement('p'); status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
   const select = document.createElement('select'); select.hidden = true; select.setAttribute('aria-label', 'Выбрать найденную сессию');
   const value = document.createElement('textarea'); value.readOnly = true; value.hidden = true; value.autocomplete = 'off'; value.spellcheck = false; value.setAttribute('aria-label', 'Session-id');
@@ -82,10 +119,10 @@
     candidates = []; status.textContent = ''; panel.hidden = true; open.hidden = false;
   });
   scan.addEventListener('click', () => {
-    candidates = find(); select.replaceChildren(); value.value = ''; value.hidden = true; copy.disabled = true;
+    const result = find(); candidates = result.candidates; select.replaceChildren(); value.value = ''; value.hidden = true; copy.disabled = true;
     select.hidden = candidates.length < 2;
     if (!candidates.length) {
-      status.textContent = 'В адресах session-id не найден. Убедись, что настоящая игра запущена после входа. Разреши расширение для 1play.gamedev-tech.cc и открой панель внутри игры. Этот способ не читает скрытые заголовки запросов.';
+      status.textContent = 'В открытых URL session-id не найден (iframe проверено: ' + result.frames + '). Открой Lucky Jet после входа по адресу one-vv1935.com/casino/play/v_1wingames:luckyjet и нажми «Найти» снова. Разреши Userscripts для one-vv1935.com и 1play.gamedev-tech.cc. Скрипт не видит закрытые заголовки и ответы API.';
       return;
     }
     candidates.forEach((candidate, index) => {
