@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#06030b">
   <meta name="description" content="Локальный Userscript для просмотра session-id своей игровой сессии на iPhone. Без отправки данных.">
-  <title>GOD PREDITOR · Session ID Reader</title>
+  <title>GOD PREDITOR · Session ID Reader v1.1</title>
   <style>
     :root{color-scheme:dark;--neon:#ae73ff;--soft:#cdb9ea;--muted:#9f94ae}
     *{box-sizing:border-box}html{background:#000}body{margin:0;min-height:100vh;background:radial-gradient(ellipse 80% 28% at 50% 0%,#43106988,transparent 78%),#000;color:#f9f8ff;font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -37,14 +37,14 @@
   <main class="shell">
     <div class="brand"><div class="orb" aria-hidden="true"></div> GOD PREDITOR · LOCAL TOOLS</div>
     <h1>Session ID <span>Reader</span></h1>
-    <p class="lead">Скрипт для Safari на iPhone: показывает session-id только из адресов твоей открытой игры и её iframe, если такой параметр там действительно присутствует.</p>
+    <p class="lead">Обновлено для Lucky Jet: проверяет адрес открытой игры, iframe, ссылки запуска и доступный журнал загрузок — без передачи идентификатора на сервер.</p>
     <section class="panel" aria-labelledby="install-title">
       <div class="eyebrow">iPhone · Safari · Userscripts</div>
       <h2 id="install-title">Установить скрипт</h2>
-      <p>Оригинальный код сохранён в отдельном файле <code>session-id-iphone.user.js</code> без изменения логики.</p>
+      <p>Обновлённый скрипт <strong>v1.1.0</strong> сохранён в файле <code>session-id-iphone.user.js</code>. Если у тебя стоит старая версия, замени её в расширении Userscripts.</p>
       <div class="buttons">
         <a class="button primary" href="./session-id-iphone.user.js">Открыть файл для установки</a>
-        <a class="button secondary" href="https://github.com/MiuiProKing/MiuiProKing/blob/main/session-id-reader/session-id-iphone.user.js" rel="noopener noreferrer">Посмотреть код на GitHub</a>
+        <a class="button secondary" href="https://one-vv1935.com/casino/play/v_1wingames:luckyjet" rel="noopener noreferrer">Открыть Lucky Jet</a>
       </div>
     </section>
     <section class="panel" aria-labelledby="instructions-title">
@@ -52,10 +52,10 @@
       <h2 id="instructions-title">Три шага</h2>
       <ol class="steps">
         <li>Установи совместимое расширение Userscripts для Safari и добавь в него файл по ссылке выше. Разреши работу только на нужных игровых доменах.</li>
-        <li>В Safari открой собственную активную игровую сессию на <code>one-vv1935.com</code> или <code>1play.gamedev-tech.cc</code>.</li>
-        <li>На странице игры нажми плавающую кнопку <strong>Session ID</strong>, затем <strong>Найти</strong>.</li>
+        <li>В Safari открой игру по <a href="https://one-vv1935.com/casino/play/v_1wingames:luckyjet" rel="noopener noreferrer">этой точной ссылке Lucky Jet</a>. Дождись загрузки после авторизации.</li>
+        <li>На странице игры нажми плавающую кнопку <strong>Session ID</strong>, затем <strong>Найти</strong>. Если игра перезапустилась, нажми «Найти» повторно.</li>
       </ol>
-      <div class="warning"><strong>Важно:</strong> эта страница GitHub Pages не умеет читать session-id с другого сайта. Сам скрипт должен запускаться расширением непосредственно на странице игры. Если ID передаётся только в скрытых заголовках, он может не обнаружиться.</div>
+      <div class="warning"><strong>Важно:</strong> эта страница GitHub Pages не умеет читать session-id с другого сайта. Сам скрипт должен запускаться расширением непосредственно на странице игры. Если ID передаётся только в скрытых заголовках или ответах API, этот скрипт не сможет его показать.</div>
     </section>
     <section class="panel">
       <div class="eyebrow">Приватность</div>
