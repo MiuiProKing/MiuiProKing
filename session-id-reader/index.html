@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#06030b">
+  <meta name="description" content="Локальный Userscript для просмотра session-id своей игровой сессии на iPhone. Без отправки данных.">
+  <title>GOD PREDITOR · Session ID Reader</title>
+  <style>
+    :root{color-scheme:dark;--neon:#ae73ff;--soft:#cdb9ea;--muted:#9f94ae}
+    *{box-sizing:border-box}html{background:#000}body{margin:0;min-height:100vh;background:radial-gradient(ellipse 80% 28% at 50% 0%,#43106988,transparent 78%),#000;color:#f9f8ff;font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .shell{width:min(760px,calc(100% - 36px));margin:0 auto;padding:46px 0 60px}
+    .brand{display:flex;align-items:center;gap:10px;color:#d8b8ff;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+    .orb{width:30px;height:30px;border:1px solid #bc8aff;border-radius:50%;background:radial-gradient(circle at 33% 30%,#ffb9fc,#7922ca 43%,#160827 80%);box-shadow:0 0 24px #a944e47e}
+    h1{font-size:clamp(35px,7vw,61px);line-height:1.06;letter-spacing:-.055em;margin:25px 0 14px}
+    h1 span{color:#c391ff;text-shadow:0 0 32px #a14dfe60}
+    .lead{font-size:17px;color:var(--soft);max-width:670px;margin:0 0 24px}
+    .panel{margin:24px 0;background:linear-gradient(140deg,#180d29,#090611);border:1px solid #67328d;border-radius:22px;padding:23px;box-shadow:0 0 24px #a044ef24}
+    .eyebrow{margin:0 0 10px;color:#bb8cf4;text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:800}
+    .buttons{display:flex;flex-wrap:wrap;gap:11px;margin-top:20px}
+    .button{display:inline-flex;align-items:center;justify-content:center;min-height:49px;padding:12px 19px;border-radius:14px;text-decoration:none;font-weight:750;text-align:center}
+    .button.primary{background:linear-gradient(125deg,#a55aff,#6e2ac1);color:white;box-shadow:0 5px 27px #a45cff4f}
+    .button.secondary{border:1px solid #8d51c3;background:#1c1031;color:#f9f3ff}
+    h2{margin:4px 0 13px;font-size:22px;letter-spacing:-.02em}p{margin:0 0 12px}
+    .steps{display:grid;gap:11px;padding:0;margin:17px 0;counter-reset:step;list-style:none}
+    .steps li{position:relative;padding:12px 15px 12px 49px;background:#130d1c;border:1px solid #37234c;border-radius:12px}
+    .steps li::before{counter-increment:step;content:counter(step);position:absolute;left:13px;top:12px;display:grid;place-items:center;border-radius:9px;width:26px;height:26px;background:#4b236e;color:white;font-weight:800}
+    .warning{border-left:3px solid #bd81ff;padding:11px 14px;background:#210e2b;color:#e8d7f9;border-radius:0 10px 10px 0}
+    .small{font-size:13px;color:var(--muted)}code{background:#260d3d;padding:2px 5px;border-radius:5px;word-break:break-word;color:#f0dfff}
+    a{color:#d8b4ff}a:focus-visible{outline:2px solid var(--neon);outline-offset:3px}
+    .foot{margin-top:30px;color:#867f92;font-size:12px}
+    @media (max-width:490px){.shell{padding-top:26px}.panel{padding:17px}.button{width:100%}}
+  </style>
+  <link rel="stylesheet" href="../god-vip-neon/AMOLED_ULTRA_VIVID.css">
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><div class="orb" aria-hidden="true"></div> GOD PREDITOR · LOCAL TOOLS</div>
+    <h1>Session ID <span>Reader</span></h1>
+    <p class="lead">Скрипт для Safari на iPhone: показывает session-id только из адресов твоей открытой игры и её iframe, если такой параметр там действительно присутствует.</p>
+    <section class="panel" aria-labelledby="install-title">
+      <div class="eyebrow">iPhone · Safari · Userscripts</div>
+      <h2 id="install-title">Установить скрипт</h2>
+      <p>Оригинальный код сохранён в отдельном файле <code>session-id-iphone.user.js</code> без изменения логики.</p>
+      <div class="buttons">
+        <a class="button primary" href="./session-id-iphone.user.js">Открыть файл для установки</a>
+        <a class="button secondary" href="https://github.com/MiuiProKing/MiuiProKing/blob/main/session-id-reader/session-id-iphone.user.js" rel="noopener noreferrer">Посмотреть код на GitHub</a>
+      </div>
+    </section>
+    <section class="panel" aria-labelledby="instructions-title">
+      <div class="eyebrow">Как пользоваться</div>
+      <h2 id="instructions-title">Три шага</h2>
+      <ol class="steps">
+        <li>Установи совместимое расширение Userscripts для Safari и добавь в него файл по ссылке выше. Разреши работу только на нужных игровых доменах.</li>
+        <li>В Safari открой собственную активную игровую сессию на <code>one-vv1935.com</code> или <code>1play.gamedev-tech.cc</code>.</li>
+        <li>На странице игры нажми плавающую кнопку <strong>Session ID</strong>, затем <strong>Найти</strong>.</li>
+      </ol>
+      <div class="warning"><strong>Важно:</strong> эта страница GitHub Pages не умеет читать session-id с другого сайта. Сам скрипт должен запускаться расширением непосредственно на странице игры. Если ID передаётся только в скрытых заголовках, он может не обнаружиться.</div>
+    </section>
+    <section class="panel">
+      <div class="eyebrow">Приватность</div>
+      <h2>Данные остаются на устройстве</h2>
+      <p>В загруженном скрипте нет сетевой отправки результатов. Он показывает найденный ID локально, а копирование выполняет только после твоего нажатия.</p>
+      <p class="small">Не публикуй действующий session-id в репозитории, скриншотах или переписках. Никогда не вводи его в эту страницу: здесь нет поля для ввода и нет проверки действительности токена.</p>
+    </section>
+    <p class="foot">GOD PREDITOR · Независимый инструмент; не часть казино. Тестирование на реальном iPhone не выполнялось.</p>
+  </main>
+</body>
+</html>
