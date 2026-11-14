@@ -12,9 +12,9 @@ export function analyzeMultiX(rows,now=Date.now(),low=10,high=500){
  const valid=rows.filter(r=>Number.isFinite(r.x)&&Number.isFinite(r.t)&&r.x>=1&&r.t<=now).sort((a,b)=>a.t-b.t);
  const coefs=valid.map(r=>r.x),recent=valid.slice(-80),last50=coefs.slice(-50),last20=coefs.slice(-20);
  const stats={rounds:valid.length,median50:median(last50),mad50:mad(last50),ema20:ema(last20,.25),ema50:ema(last50,.12),geometricMean:geo(coefs),big20:recent.filter(r=>r.x>=20).length,big50:recent.filter(r=>r.x>=50).length};
- if(valid.length<20)return {stats,signals:[],reason:'Недостаточно данных: нужно минимум 20 завершённых раундов'};
+ if(valid.length<20)return {stats,signals:[],diagnostics:[],reason:'Недостаточно данных: нужно минимум 20 завершённых раундов'};
  const thresholds=[10,20,30,50,75,100,120,150,200,250,300,400,500].filter(t=>t>=low&&t<=high);
- const signals=[];
+ const signals=[],diagnostics=[];
  for(const target of thresholds){
   const g=gap(valid,target),since=g.last===null?Infinity:now-g.last,span=valid.at(-1).t-valid[0].t;
   const lambda=span>0?g.count/span:0;
@@ -33,10 +33,19 @@ export function analyzeMultiX(rows,now=Date.now(),low=10,high=500){
   const clusterScore=cluster?clamp(55+density50*5+density20,55,82):0;
   const hazardScore=hazard?clamp(50+overdue*30,50,80):0;
   const score=Math.round(Math.min(92,Math.max(cycleScore,clusterScore,hazardScore)+(evidence>=2?5:0)));
-  if(!evidence||(evidence<2&&score<75))continue;
+  const accepted=evidence>=2||(evidence===1&&score>=75);
+  const suggestedAt=cycle?Math.max(now+90_000,expected):cluster?now+3*MIN:lambda>0?now+clamp(1/lambda,90_000,8*MIN):expected!==null?Math.max(now+90_000,expected):null;
+  const reasons=[];
+  if(g.count<4)reasons.push('Мало событий: '+g.count+'/4');
+  if(!cycle)reasons.push('Цикл не подтверждён');
+  if(!cluster)reasons.push(target>=100&&target<=120?'Кластер ниже порога 6/3':'Кластерный метод только для 100–120×');
+  if(!hazard)reasons.push('Hazard ниже порога 75% или мало данных');
+  if(evidence===1&&score<75)reasons.push('Один сигнал: баллы ниже 75');
+  diagnostics.push({target,events:g.count,medianGapMs:g.median,madGapMs:g.mad,lastAt:g.last,elapsedMs:since,overdue,cycle,cluster,hazard,score,accepted,suggestedAt,reasons});
+  if(!accepted)continue;
   let at=cycle?Math.max(now+90_000,expected):cluster?now+3*MIN:now+clamp(1/lambda,90_000,8*MIN);
   let duration=cycle?clamp(tolerance,3*MIN,10*MIN):cluster?6*MIN:clamp(.8/lambda,3*MIN,7*MIN);
   signals.push({target,at,end:at+duration,score,cycle,cluster,hazard,events:g.count,medianGapMs:g.median,overdue});
  }
- return {stats,signals:signals.sort((a,b)=>b.score-a.score||a.at-b.at),reason:'Баллы — эвристика, не калиброванная вероятность. Для доказательства преимущества нужен walk-forward backtest против базовой модели.'};
+ return {stats,diagnostics,signals:signals.sort((a,b)=>b.score-a.score||a.at-b.at),reason:'Баллы — эвристика, не калиброванная вероятность. Для доказательства преимущества нужен walk-forward backtest против базовой модели.'};
 }
